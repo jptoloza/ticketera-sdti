@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: app
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./app/src:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - ticketera-network
+
+  db:
+    image: postgres:15
+    container_name: ticketera-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=ticketera
+      - POSTGRES_USER=ticketera
+      - POSTGRES_PASSWORD=ticketera 
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ticketera-network
+
+ 
+volumes:
+  ticketera-db-data:
+    driver: local
+
+networks:
+  ticketera-network:
+    driver: bridge

@@ -1,0 +1,77 @@
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: ticketera-app
+    container_name: ticketera-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./app/src:/var/www
+      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=ticketera
+      - DB_USERNAME=ticketera
+      - DB_PASSWORD=ticketera
+      - CAS_HOSTNAME=sso-lib.uc.cl
+    depends_on:
+      - db
+    networks:
+      - ticketera-network
+
+  db:
+    image: postgres:15
+    container_name: ticketera-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=ticketera
+      - POSTGRES_USER=ticketera
+      - POSTGRES_PASSWORD=ticketera 
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ticketera-network
+
+  webserver:
+    image: nginx:alpine
+    container_name: ticketera-webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./app/src:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - ticketera-network
+
+#  node:
+#    image: node:lts-bullseye
+#    container_name: ticketera-node
+#    working_dir: /var/www
+#    volumes:
+#      - ./app/src:/var/www
+#    command: "npm run dev"
+#    ports:
+#      - "5173:5173"
+#    depends_on:
+#      - app
+#    networks:
+#      - ticketera-network
+#    tty: true
+#    stdin_open: true
+
+volumes:
+  ticketera-db-data:
+    driver: local
+
+networks:
+  ticketera-network:
+    driver: bridge
