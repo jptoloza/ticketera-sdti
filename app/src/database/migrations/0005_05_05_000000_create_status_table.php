@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('status', function (Blueprint $table) {
             $table->id();
             $table->string('status');
-            $table->boolean('active')->default(true);
+            $table->enum('active', ['0','1'])->default('1');
             $table->timestamps();
             $table->softDeletes();
         });

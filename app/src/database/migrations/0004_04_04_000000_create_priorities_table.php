@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('priorities', function (Blueprint $table) {
             $table->id();
             $table->string('priority');
-            $table->boolean('active')->default(true);
+            $table->enum('active', ['0','1'])->default('1');
             $table->timestamps();
             $table->softDeletes();
         });
