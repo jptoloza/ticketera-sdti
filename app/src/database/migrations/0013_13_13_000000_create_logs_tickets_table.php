@@ -1,29 +1,25 @@
 <?php
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Ticket;
 
 return new class extends Migration
 {
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up(): void 
     {
-        //
-        Schema::create('request_logs', function (Blueprint $table) {
+        Schema::create('logs_tickets', function (Blueprint $table) {
             $table->id();
-            $table->text('method');
-            $table->text('url');
-            $table->text('ip');
-            $table->text('headers');
-            $table->text('body');
+            $table->foreignIdFor(Ticket::class)->constrained()->cascadeOnDelete();
+            $table->string('action');
+            $table->json('data')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
-
     }
 
     /**
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('logs_tickets');
     }
 };

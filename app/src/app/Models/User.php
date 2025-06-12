@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 
+
 class User extends Model
 {
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -21,5 +23,20 @@ class User extends Model
         'login',
         'email',
     ];
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
+    public function queues()
+    {
+        return $this->belongsToMany(Queue::class, 'queue_users');
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 
 }
