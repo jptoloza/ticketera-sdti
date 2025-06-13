@@ -22,50 +22,55 @@
     z-index: 9999 !important;
 }
 
+.btn-siga {
+    color: #0176de;
+    display: inline-block !important;
+    text-align: left;
+    font-weight: 500;
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    line-height: 1.5;
+    box-shadow: 0 0 8px 0 rgba(136, 136, 136, 0.18);
+    padding: 0.6rem;
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
+    text-decoration: none;
+}
 
+.btn-siga:hover {
+    background-color: #fff;
+    border: 1px solid #0176de;
+    box-shadow: 0 0 8px 0 rgba(136, 136, 136, 0.18);
+}
+
+@media (max-width:540px) {
+    .bc-siga {
+        display: none !important;
+    }
+
+    .btn-siga {
+        width:100%;
+        margin-bottom: 5px;
+    }
+}
 
 table.uc-table_datatable th {
     vertical-align: top !important;
     color: #fff !important;
-    background-color: #0176de !important;
+    background-color: #f0f0f0 !important;
+    color: #0176DE !important;
+    font-size: 0.875rem;
+    line-height: 16px;
     font-weight: bold !important;
-    
-    font-family: Roboto, sans-serif;
-    font-size: 16px;
 }
 
-table.uc-table_datatable tbody tr td {
-  border-bottom: 1px solid #c6c6c6;
-  padding: 10px 8px;
+table.uc-table_datatable td {
+    font-size: 0.875rem;
+    line-height: 16px;
 }
 
-#data tbody tr {
-  cursor: pointer;
-}
-
-.dataTables_wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.dataTables_filter {
-  float: right !important;
-  text-align: left !important;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 26px;
-    position: absolute;
-    top: 10px !important;
-    right: 1px;
-    width: 20px;
-}
-
-.select2-container .select2-selection--single {
-    height: 45px !important;
-    border: 1px solid #c6c6c6 !important;
-    display: flex !important;
-    align-items: center !important;
-    width: 100% !important;
-
+table.uc-table_datatable th.datatable_col_w150_center,
+table.uc-table_datatable td.datatable_col_w150_center {
+    width: 150px !important;
+    text-align: center !important;
 }

@@ -37,7 +37,7 @@
 
         <div class="row mt-4">
             <div class="col-12">
-                <div class="table-responsive w-100">
+                <div class="table-responsive-md">
                     <table class="table table-hover uc-table_datatable" id="data">
                         <thead class="bg-uc-blue-1">
                             <tr>
