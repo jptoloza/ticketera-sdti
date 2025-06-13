@@ -2,46 +2,13 @@
     background-color: #ffffff !important;
 }
 
-.has-search .form-control {
-    padding-left: 2.5rem;
-}
 
-.has-search .form-control-feedback {
-    position: absolute;
-    z-index: 2;
-    display: block;
-    width: 2.5rem;
-    height: 100%;
-    line-height: 2.5rem;
-    text-align: center;
-    pointer-events: none;
-    color: #aaa;
-}
 
 .uc-modal {
     z-index: 9999 !important;
 }
 
-.btn-siga {
-    color: #0176de;
-    display: inline-block !important;
-    text-align: left;
-    font-weight: 500;
-    background-color: #fff;
-    border: 1px solid #eaeaea;
-    line-height: 1.5;
-    box-shadow: 0 0 8px 0 rgba(136, 136, 136, 0.18);
-    padding: 0.6rem;
-    font-size: 0.875rem;
-    border-radius: 0.2rem;
-    text-decoration: none;
-}
 
-.btn-siga:hover {
-    background-color: #fff;
-    border: 1px solid #0176de;
-    box-shadow: 0 0 8px 0 rgba(136, 136, 136, 0.18);
-}
 
 @media (max-width:540px) {
     .bc-siga {

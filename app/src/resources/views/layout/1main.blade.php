@@ -6,14 +6,16 @@
   <meta charset="utf-8" />
   <meta name="robots" content="noindex, nofollow">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description"
-    content="El Sistema Integrado de Gestión Académica (SiGA) moderniza y articula los procesos académicos en la Universidad, promoviendo eficiencia, trazabilidad y calidad en la atención estudiantil.">
-  <meta name="author" content="DTFD UC" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="Sistema de Ticketera">
+  <meta name="author" content="SDTI - DTFD UC" />
   <link rel="icon" type="image/png" href="https://web-uc-prod.s3.amazonaws.com/uc-cl/dist/images/favicon.png" />
   <title>@if(isset($title)) {{ $title }} @endif</title>
-  <!--  -->
+
+
+  <!-- #Fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
+
 
   <!-- #Jquery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -22,17 +24,17 @@
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
     integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+  <!-- #Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
     crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-    crossorigin="anonymous"></script>
 
 
 
-  <!-- DataTables JS -->
+  <!-- #DataTables JS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
@@ -46,13 +48,8 @@
     integrity="sha384-d3UHjPdzJkZuk5H3qKYMLRyWLAQBJbby2yr2Q58hXXtAGF8RSNO9jpLDlKKPv5v3"
     crossorigin="anonymous"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
 
-  <script src="/assets/js/jquery.form.js"></script>
-
-
-
+  <!-- #Kit Digital UC -->
   <link rel="stylesheet" href="https://kit-digital-uc-prod.s3.amazonaws.com/uc-kitdigital/css/uc-kitdigital.css" />
   <script src="https://kit-digital-uc-prod.s3.amazonaws.com/uc-kitdigital/js/uc-kitdigital.js"></script>
 
@@ -60,28 +57,30 @@
 
 
 
-  <!--  -->
-  <link href="/assets/css/loading.css" rel="stylesheet" />
+  <!-- #Ticketera css -->
   <link href="/assets/css/layout.css" rel="stylesheet" />
+  <link href="/assets/css/loading.css" rel="stylesheet" />
   <link href="/assets/css/app.css" rel="stylesheet" />
+  <!-- #Ticketera js -->
   <script src="/assets/js/app.js"></script>
+
 
 </head>
 
 <body>
-  <h1 class="uc-sr-only">[Mesa de Serivios Técnologicos DTFD]</h1>
-  <!-- header -->
+  <h1 class="uc-sr-only">[Mesa de Serivios Técnologicos SDTI]</h1>
+
   @include('layout.header')
 
-  <!-- main -->
   <div class="main-content">
-    <aside class="aside d-none d-lg-block col-lg-3 bg-white p-0 ms-3">
+    <!-- #aside -->
+    <aside class="aside d-none d-lg-block col-lg-2 bg-white p-0 ms-3 h-100">
       @include('layout.menu')
     </aside>
 
     <div class="main-column bg-white">
       <div class="row">
-        <div class="col-12 main-dashboard">
+        <div class="col-12 main-dashboard pt-3">
           @yield('content')
         </div>
       </div>
@@ -89,10 +88,7 @@
 
   </div>
 
-
-  <!-- footer -->
   @include('layout.footer')
-
 
   @if(Session::has('message'))
     <div id="toast" role="alert" aria-live="assertive" aria-atomic="true"
@@ -116,7 +112,7 @@
     </script>
     @php
     Session::forget('message');
-    @endphp
+  @endphp
   @endif
 
 

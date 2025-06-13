@@ -1,4 +1,4 @@
-<!-- header -->
+
 <header class="sticky-top">
     <!-- navbar desktop -->
     <nav class="navbar navbar-expand-lg bg-uc-blue-1 sticky-top">

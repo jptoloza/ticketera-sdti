@@ -55,7 +55,7 @@
                 lengthChange: false,
                 processing: true,
                 responsive: true,
-                ajax: "{{ route('admin-users-get') }}",
+                ajax: "{{ route('admin_users_get') }}",
                 language: {
                     info: '_START_ al _END_ de _TOTAL_ registros.',
                     search: 'Búsqueda rápida',

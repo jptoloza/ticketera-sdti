@@ -1,7 +1,6 @@
 
-  <!-- footer -->
 
-  <footer class="footer">
+  <footer>
     <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
       <div class="d-flex align-items-center mb-0 mb-md-0">
         <img src="https://kit-digital-uc-prod.s3.amazonaws.com/assets/uc_sm.svg" alt="Logo UC" class="footer-logo">

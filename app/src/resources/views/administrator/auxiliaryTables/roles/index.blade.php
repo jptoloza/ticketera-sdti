@@ -53,7 +53,7 @@
                 lengthChange: false,
                 processing: true,
                 responsive: true,
-                ajax: "{{ route('admin-roles-get') }}",
+                ajax: "{{ route('admin_roles_get') }}",
                 language: {
                     info: '_START_ al _END_ de _TOTAL_ registros.',
                     search: 'Búsqueda rápida',
