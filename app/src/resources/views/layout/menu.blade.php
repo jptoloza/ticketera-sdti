@@ -17,6 +17,20 @@
       <ul class="uc-navbar-side">
         <li>
           <a href="">
+            Mis tickets (0)
+            <i class="uc-icon">keyboard_arrow_right</i>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#" class="uc-navbar-side_label active">
+        <span class="h5"><i class="uc-icon me-2">local_offer</i>Tickets</span>
+
+      </a>
+      <ul class="uc-navbar-side">
+        <li>
+          <a href="">
             Mis tickets abiertos (0)
             <i class="uc-icon">keyboard_arrow_right</i>
           </a>

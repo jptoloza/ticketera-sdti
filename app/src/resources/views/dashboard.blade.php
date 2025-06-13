@@ -21,23 +21,25 @@
 
 
         <h1>Mis tickets abiertos</h1>
+        <div class="uc-text-divider divider-primary mt-16 mb-4"></div>
 
 
-        <div class="d-flex justify-content-center align-items-center">
-            <button type="button" class="uc-btn btn-primary" data-mtarget="mddalSearch">
-                <i class="uc-icon icon-size--sm">search</i> Buscar
-            </button>
-        </div>
-
+        <!--
+                <div class="d-flex justify-content-center align-items-center">
+                    <button type="button" class="uc-btn btn-primary" data-mtarget="mddalSearch">
+                        <i class="uc-icon icon-size--sm">search</i> Buscar
+                    </button>
+                </div>
+        -->
         <div class="clearfix"></div>
 
 
 
         <div class="row mt-4">
             <div class="col-12">
-                <div class="table-responsive">
+                <div class="table-responsive w-100">
                     <table class="table table-hover uc-table_datatable" id="data">
-                        <thead>
+                        <thead class="bg-uc-blue-1">
                             <tr>
                                 <th class="align-top" style="width: 80px">ID</th>
                                 <th class="align-top">Cola</th>
@@ -48,47 +50,238 @@
                                 <th class="align-top" style="width: 100px">Fecha<br />Actualización</th>
                             </tr>
                         </thead>
-                        
+
 
                         <tbody>
-                            <tr>
+                            <tr data-id="/agent/request/2">
                                 <td class="align-top" style="width: 80px">ID</td>
                                 <td class="align-top">Cola1</td>
-                                <td class="align-top"><span class="badge rounded-pill bg-primary">Asignado</span></td>
+                                <td class="align-top"><span class="badge bg-info text-dark text-uppercase">Asignado</span>
+                                </td>
                                 <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
                                 <td class="align-top">Este es el asunto del mensaje</td>
-                                <td class="align-top" style="width: 100px">2025-01-01<br/>00:00</td>
-                                <td class="align-top" style="width: 100px">2025-01-01<br/>00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
                             </tr>
 
-                            <tr>
+                            <tr data-id="2">
                                 <td class="align-top" style="width: 80px">ID</td>
                                 <td class="align-top">Cola1</td>
-                                <td class="align-top"><span class="badge rounded-pill bg-primary">En progreso</span></td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
                                 <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
                                 <td class="align-top">Este es el asunto del mensaje</td>
-                                <td class="align-top" style="width: 100px">2025-01-01<br/>00:00</td>
-                                <td class="align-top" style="width: 100px">2025-01-01<br/>00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
                             </tr>
-                            <tr>
+                            <tr data-id="2">
                                 <td class="align-top" style="width: 80px">ID</td>
                                 <td class="align-top">Cola1</td>
-                                <td class="align-top"><span class="badge rounded-pill bg-primary">Asignado</span></td>
+                                <td class="align-top"><span class="badge bg-primary">Asignado</span></td>
                                 <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
                                 <td class="align-top">Este es el asunto del mensaje</td>
-                                <td class="align-top" style="width: 100px">2025-01-01<br/>00:00</td>
-                                <td class="align-top" style="width: 100px">2025-01-01<br/>00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
                             </tr>
-                            <tr>
+                            <tr data-id="2">
                                 <td class="align-top" style="width: 80px">ID</td>
                                 <td class="align-top">Cola1</td>
-                                <td class="align-top"><span class="badge rounded-pill bg-primary">En progreso</span></td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
                                 <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
                                 <td class="align-top">Este es el asunto del mensaje</td>
-                                <td class="align-top" style="width: 100px">2025-01-01<br/>00:00</td>
-                                <td class="align-top" style="width: 100px">2025-01-01<br/>00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
                             </tr>
 
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-info text-dark text-uppercase">Asignado</span>
+                                </td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">Asignado</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-info text-dark text-uppercase">Asignado</span>
+                                </td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">Asignado</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-info text-dark text-uppercase">Asignado</span>
+                                </td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">Asignado</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-info text-dark text-uppercase">Asignado</span>
+                                </td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">Asignado</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-info text-dark text-uppercase">Asignado</span>
+                                </td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">Asignado</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
+                            <tr data-id="2">
+                                <td class="align-top" style="width: 80px">ID</td>
+                                <td class="align-top">Cola1</td>
+                                <td class="align-top"><span class="badge bg-primary">En progreso</span></td>
+                                <td class="align-top">Juan Pere< (juanperes@uc.cl)</td>
+                                <td class="align-top">Este es el asunto del mensaje</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                                <td class="align-top" style="width: 100px">2025-01-01<br />00:00</td>
+                            </tr>
 
                         </tbody>
 
@@ -151,10 +344,11 @@
     <script>
         $().ready(function () {
             $('#data').DataTable({
+
                 pageLength: 10,
                 lengthChange: false,
                 processing: true,
-                responsive: true,
+                responsive: false,
                 language: {
                     info: '_START_ al _END_ de _TOTAL_ registros.',
                     search: 'Búsqueda rápida',
@@ -162,12 +356,23 @@
                     infoEmpty: 'No hay datos para publicar.',
                     infoFiltered: '(filtrado de _MAX_).',
                     emptyTable: '',
-                    loadingRecords: ''
+                    loadingRecords: '',
+                    paginate: {
+                        previous: '<span class="uc-icon">navigate_before</span>',
+                        next: '<span class="uc-icon">keyboard_arrow_right</span>'
+                    }
                 },
-                paging: true,
-                scrollCollapse: false,
                 ordering: false,
+                scrollCollapse: false,
+                paging: true
             });
+
+            $('#data tbody').on('click', 'tr', function () {
+                const id = $(this).data('id');
+                window.location.href = `${id}`;
+            });
+
+
         });
     </script>
 
