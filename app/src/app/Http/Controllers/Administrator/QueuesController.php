@@ -16,6 +16,8 @@ use App\Http\Traits\ResponseTrait;
 use App\Models\UserRole;
 use App\Models\User;
 use Illuminate\Log\Logger;
+use App\Models\Queue;
+use App\Models\QueueUser;
 
 class QueuesController extends Controller
 {
@@ -26,30 +28,30 @@ class QueuesController extends Controller
      */
     public function index()
     {
-        return view('administrator.roles.index', [
-            'title'   => 'Roles',
-            'ajaxGet' => Jquery::ajaxGet('url', '/admin/roles')
+        return view('administrator.queues.index', [
+            'title'   => 'Colas',
+            'ajaxGet' => Jquery::ajaxGet('url', '/admin/colas')
         ]);
     }
 
     public function get()
     {
-        $roles = Role::select(
-            'roles.id',
-            'roles.role',
-            'roles.active',
+        $queues = Queue::select(
+            'queues.id',
+            'queues.queue',
+            'queues.active',
         )->get();
 
         $data = [];
 
-        foreach ($roles as $role) {
-            $link   = '<a href="' . route('admin_roles_editForm', ['id' => $role->id]) . '" title="Editar"><span class="uc-icon">edit</span></a> 
-                <a href="' . route('admin_roles_delete', ['id' => $role->id]) . '" class="btnDelete" title="Eleminar"><i class="uc-icon">delete</i></a>  
-                <a href="' . route('admin_roles_users', ['id' => $role->id]) . '"title="Añadir Usuario "><span class="uc-icon">person_add</span></a>';
+        foreach ($queues as $queue) {
+            $link   = '<a href="' . route('admin_queues_editForm', ['id' => $queue->id]) . '" title="Editar"><span class="uc-icon">edit</span></a> 
+                <a href="' . route('admin_queues_delete', ['id' => $queue->id]) . '" class="btnDelete" title="Eleminar"><i class="uc-icon">delete</i></a>  
+                <a href="' . route('admin_queues_users', ['id' => $queue->id]) . '"title="Añadir Usuario "><span class="uc-icon">person_add</span></a>';
             $data[] = [
                 $link,
-                $role->active == 1 ? 'Sí' : 'No',
-                $role->role,
+                $queue->active == 1 ? 'Sí' : 'No',
+                $queue->queue,
             ];
         }
         return response()->json(['data' => $data], 200);
@@ -60,9 +62,9 @@ class QueuesController extends Controller
      */
     public function create()
     {
-        return view('administrator.roles.add', [
-            'title'   => 'Roles',
-            'ajaxAdd' => Jquery::ajaxPost('actionForm', '/admin/roles')
+        return view('administrator.queues.add', [
+            'title'   => 'Colas',
+            'ajaxAdd' => Jquery::ajaxPost('actionForm', '/admin/queues')
         ]);
     }
 
@@ -80,20 +82,20 @@ class QueuesController extends Controller
                 'active'            => 'Usuario Activo no es válido.',
             ]);
 
-            $role = Role::where('role', '=', $request->input('name'))->first();
-            if ($role) {
+            $queue = Queue::where('queue', '=', $request->input('name'))->first();
+            if ($queue) {
                 throw new Exception('Rol registrado anteriormente.');
             }
-            $role = new Role();
-            $role->role     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
-            $role->active   = $request->input('active');
-            $role->save();
+            $queue = new Queue();
+            $queue->queue     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
+            $queue->active   = $request->input('active');
+            $queue->save();
 
             Session::flash('message', 'Datos guardados!');
-            LoggerHelper::add($request,  'ADD|OK|ROL:' . $role->id);
+            LoggerHelper::add($request,  'ADD|OK|QUEUE:' . $queue->id);
             return response()->json([
                 'success'   => 'ok',
-                'data'      => $role
+                'data'      => $queue
             ], 201);
         } catch (ValidationException $e) {
             return $this->responseErrorValidattion($request, $e->errors());
@@ -114,14 +116,14 @@ class QueuesController extends Controller
      */
     public function edit(string $id)
     {
-        $role = Role::find($id);
-        if (!$role) {
+        $queue = Queue::find($id);
+        if (!$queue) {
             abort(404);
         }
-        return view('administrator.roles.edit', [
-            'title'       => 'Roles',
-            'role'        => $role,
-            'ajaxUpdate'  => Jquery::ajaxPost('actionForm', '/admin/roles')
+        return view('administrator.queues.edit', [
+            'title'       => 'Colas',
+            'queue'        => $queue,
+            'ajaxUpdate'  => Jquery::ajaxPost('actionForm', '/admin/queues')
         ]);
     }
 
@@ -141,28 +143,28 @@ class QueuesController extends Controller
                 'active'   => 'Usuario Activo no es válido.',
             ]);
 
-            $role = Role::find($request->input('id'));
-            if (!$role) {
+            $queue = Queue::find($request->input('id'));
+            if (!$queue) {
                 throw new Exception('Rol no registrado.');
             }
-            $roles = Role::where('role', '=', $request->input('name'));
-            if ($roles->count() > 0) {
-                foreach ($roles->get() as $uurole) {
-                    $uurole = (object)$uurole;
-                    if ($uurole->id != $role->id) {
-                        throw new Exception('Rol registrado anteriormente.');
+            $queues = Queue::where('queue', '=', $request->input('name'));
+            if ($queues->count() > 0) {
+                foreach ($queues->get() as $uuqueue) {
+                    $uuqueue = (object)$uuqueue;
+                    if ($uuqueue->id != $queue->id) {
+                        throw new Exception('Cola registrada anteriormente.');
                     }
                 }
             }
-            $role->role     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
-            $role->active   = $request->input('active');
-            $role->save();
+            $queue->queue     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
+            $queue->active   = $request->input('active');
+            $queue->save();
 
             Session::flash('message', 'Datos guardados!');
-            LoggerHelper::add($request,  'UPDATE|OK|ROL:' . $role->id);
+            LoggerHelper::add($request,  'UPDATE|OK|QUEUE:' . $queue->id);
             return response()->json([
                 'success'   => 'ok',
-                'data'      => $role
+                'data'      => $queue
             ], 201);
         } catch (ValidationException $e) {
             return $this->responseErrorValidattion($request, $e->errors());
@@ -182,16 +184,16 @@ class QueuesController extends Controller
     public function destroy(Request $request, $id = null)
     {
         try {
-            $role = Role::find($id);
-            if (!$role) {
+            $queue = Queue::find($id);
+            if (!$queue) {
                 throw new Exception('Rol no existe.');
             }
-            $role->delete();
+            $queue->delete();
             Session::flash('message', 'Datos eliminados!');
-            LoggerHelper::add($request, 'DELETE|OK|ROL:' . $id . '|' . json_encode($role->toArray()));
+            LoggerHelper::add($request, 'DELETE|OK|QUEUE:' . $id . '|' . json_encode($queue->toArray()));
             return response()->json([
                 'success'   => 'ok',
-                'data'      => $role
+                'data'      => $queue
             ], 200);
         } catch (ValidationException $e) {
             return $this->responseErrorValidattion($request, $e->errors());
@@ -213,38 +215,50 @@ class QueuesController extends Controller
      */
     public function users(Request $request, $id = null)
     {
-        $role = Role::find($id);
-        if (!$role) {
+        $queue = Queue::find($id);
+        if (!$queue) {
             abort(404);
         }
-        $userRoles = UserRole::join('users AS A', 'user_roles.user_id', '=', 'A.id')
-            ->join('roles AS B', 'user_roles.role_id', '=', 'B.id')
-            ->select('user_roles.id', 'A.id as user_id', 'A.rut', 'A.name', 'A.email', 'B.role')
-            ->where('user_roles.role_id', '=', $id)
+        $userQueues = QueueUser::join('users AS A', 'queue_users.user_id', '=', 'A.id')
+            ->join('queues AS B', 'queue_users.queue_id', '=', 'B.id')
+            ->select('queue_users.id', 'A.id as user_id', 'A.rut', 'A.name', 'A.email', 'B.queue')
+            ->where('queue_users.queue_id', '=', $id)
             ->where('A.activate', '=', '1')
             ->where('B.active', '=', '1')
             ->orderBy('A.name', 'asc')
             ->get();
 
         $data = [];
-        foreach ($userRoles as $value) {
+        foreach ($userQueues as $value) {
             $_data = UtilHelper::ucTexto($value->name) . ' ( ' . $value->email . ' / ' . $value->rut . ' )';
             $data[$value->id] = $_data;
         }
         $dataUsers = [];
-        $users = User::where('activate', '=', '1')
-            //            ->whereNull('U.deleted_at')
+
+        $agentRoleId = 2;
+
+        $assignedUserIds = QueueUser::where('queue_id', $queue->id)
+            ->pluck('user_id')
+            ->toArray();
+
+        $users = User::join('user_roles', 'users.id', '=', 'user_roles.user_id')
+            ->where('users.activate', '1')
+            ->where('user_roles.role_id', $agentRoleId)
+            ->whereNotIn('users.id', $assignedUserIds)
+            ->select('users.*')
+            ->orderBy('users.name', 'asc')
             ->get();
+
         foreach ($users as $user) {
             $dataUsers[$user->id] = UtilHelper::ucTexto($user->name) . ' ( ' . $user->email . ' / ' . $user->rut . ' )';
         }
-        return view('administrator.roles.add_users', [
-            'title'     => 'Roles',
-            'role'      => $role,
+        return view('administrator.queues.add_users', [
+            'title'     => 'Colas',
+            'queue'      => $queue,
             'data'      => $data,
             'users'     => $dataUsers,
-            'ajaxAdd'   => Jquery::ajaxPost('actionForm', route('admin_roles_users', $role->id)),
-            'ajaxGet'   => Jquery::ajaxGet('url', route('admin_roles_users', $role->id))
+            'ajaxAdd'   => Jquery::ajaxPost('actionForm', route('admin_queues_users', $queue->id)),
+            'ajaxGet'   => Jquery::ajaxGet('url', route('admin_queues_users', $queue->id))
         ]);
     }
 
@@ -260,27 +274,27 @@ class QueuesController extends Controller
     {
         try {
             $validated = $request->validate([
-                'role_id' => ['required'],
+                'queue_id' => ['required'],
                 'user_id' => ['required'],
             ], [
-                'role_id' => 'Role ID no es valido',
+                'queue_id' => 'Cola ID no es valido',
                 'user_id' => 'Usuario no es valido.',
             ]);
 
-            $userRole = UserRole::where('user_id', $request->input('user_id'))
-                ->where('role_id',  $request->input('role_id'))->first();
-            if ($userRole) {
+            $userQueue = QueueUser::where('user_id', $request->input('user_id'))
+                ->where('queue_id',  $request->input('queue_id'))->first();
+            if ($userQueue) {
                 throw new Exception('Usuario registrado anteriormente.');
             }
-            $userRole = new UserRole();
-            $userRole->role_id = $request->input('role_id');
-            $userRole->user_id = $request->input('user_id');
-            $userRole->save();
+            $userQueue = new QueueUser();
+            $userQueue->queue_id = $request->input('queue_id');
+            $userQueue->user_id = $request->input('user_id');
+            $userQueue->save();
             Session::flash('message', 'Datos guardados!');
-            LoggerHelper::add($request,'ADD|OK|USER_ROLE:', $userRole->id);
+            LoggerHelper::add($request,'ADD|OK|USER_QUEUE:', $userQueue->id);
             return response()->json([
                 'success'   => 'ok',
-                'data'      => $userRole
+                'data'      => $userQueue
             ], 201);
         } catch (ValidationException $e) {
             return $this->responseErrorValidattion($request, $e->errors());
@@ -302,17 +316,17 @@ class QueuesController extends Controller
     public function deleteUser(Request $request, $id = 0)
     {
         try {
-            $userRole = UserRole::find($id);
-            if (!$userRole) {
+            $userQueue = QueueUser::find($id);
+            if (!$userQueue) {
                 throw new Exception('Usuario no existe.');
             }
-            $userRole->delete();
+            $userQueue->delete();
             Session::flash('message', 'Datos eliminados!');
-            LoggerHelper::add($request,'DELETE|OK|USER_ROLE:', $id);
+            LoggerHelper::add($request,'DELETE|OK|USER_QUEUE:', $id);
 
             return response()->json([
                 'success'   => 'ok',
-                'data'      => $userRole
+                'data'      => $userQueue
             ], 200);
         } catch (ValidationException $e) {
             return $this->responseErrorValidattion($request, $e->errors());

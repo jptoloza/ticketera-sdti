@@ -13,6 +13,7 @@ use App\Http\Controllers\Users\RequestsController as UsersRequestController;
 
 use App\Http\Controllers\Administrator\RoleController;
 use App\Http\Controllers\Administrator\QueuesController;
+use App\Http\Controllers\Administrator\StatusController;
 
 
 
@@ -148,25 +149,25 @@ Route::middleware([AuthTicket::class])->group(function () {
 
 
         // Status
-        Route::get('/admin/status/', [RoleController::class, 'index'])
+        Route::get('/admin/status/', [StatusController::class, 'index'])
             ->name('admin_status');
 
-        Route::get('/admin/status/get', [RoleController::class, 'get'])
+        Route::get('/admin/status/get', [StatusController::class, 'get'])
             ->name('admin_status_get');
 
-        Route::get('/admin/status/add', [RoleController::class, 'addForm'])
+        Route::get('/admin/status/add', [StatusController::class, 'addForm'])
             ->name('admin_status_addForm');
 
-        Route::post('/admin/status/add', [RoleController::class, 'add'])
-            ->name('admin_rstatusadd');
+        Route::post('/admin/status/add', [StatusController::class, 'add'])
+            ->name('admin_statusadd');
 
-        Route::get('/admin/status/edit/{id}', [RoleController::class, 'editForm'])
+        Route::get('/admin/status/edit/{id}', [StatusController::class, 'editForm'])
             ->name('admin_status_editForm');
 
-        Route::post('/admin/status/edit', [RoleController::class, 'edit'])
+        Route::post('/admin/status/edit', [StatusController::class, 'edit'])
             ->name('admin_status_edit');
 
-        Route::get('/admin/status/delete/{id}', [RoleController::class, 'delete'])
+        Route::get('/admin/status/delete/{id}', [StatusController::class, 'delete'])
             ->name('admin_status_delete');
     });
 });

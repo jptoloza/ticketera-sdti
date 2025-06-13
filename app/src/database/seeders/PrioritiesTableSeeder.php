@@ -16,7 +16,7 @@ class PrioritiesTableSeeder extends Seeder
         $priorities = ['Baja', 'Media', 'Alta', 'Crítica'];
 
         foreach ($priorities as $priority) {
-            Priority::firstOrCreate(['priority' => $priority], ['active' => true]);
+            Priority::firstOrCreate(['priority' => $priority], ['active' => '1']);
         }
     }
 }

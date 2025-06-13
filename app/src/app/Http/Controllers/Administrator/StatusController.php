@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Helpers\Jquery;
 use App\Http\Helpers\Util;
-use App\Models\Role;
+use App\Models\Status;
 
 
 class StatusController extends Controller
@@ -18,31 +18,30 @@ class StatusController extends Controller
      */
     public function index()
     {
-        return view('administrator.roles.index', [
-          'title'   => 'Roles',
-          'ajaxGet' => Jquery::ajaxGet('url', '/admin/roles')
+        return view('administrator.status.index', [
+          'title'   => 'Estados',
+          'ajaxGet' => Jquery::ajaxGet('url', '/admin/status')
         ]);
     }
 
     public function get()
     {
-        $roles = Role::select(
-            'roles.id',
-            'roles.role',
-            'roles.active',
+        $status = Status::select(
+            'status.id',
+            'status.status',
+            'status.active',
         )->get();
 
         $data = [];
 
-        foreach ($roles as $role) {
+        foreach ($status as $statu) {
             $link   = '
-                <a href="/admin/roles/edit/' . $role->id . '" title="Editar"><span class="uc-icon">edit</span></a>&nbsp;&nbsp;
-                <a href="/admin/roles/delete/' . $role->id . '" class="btnDelete" title="Eleminar"><i class="uc-icon">delete</i></a>&nbsp;&nbsp; 
-                <a href="/admin/roles/userAdd/' . $role->id . '"title="Añadir Usuario "><span class="uc-icon">person_add</span></a>';
+                <a href="/admin/status/edit/' . $statu->id . '" title="Editar"><span class="uc-icon">edit</span></a>&nbsp;&nbsp;
+                <a href="/admin/status/delete/' . $statu->id . '" class="btnDelete" title="Eleminar"><i class="uc-icon">delete</i></a>&nbsp;&nbsp'; 
             $data[] = [
                 $link,
-                $role->active == 1 ? 'Sí' : 'No',
-                $role->role,
+                $statu->active == 1 ? 'Sí' : 'No',
+                $statu->status,
             ];
         }
         return response()->json(['data' => $data], 200);
@@ -53,7 +52,23 @@ class StatusController extends Controller
      */
     public function create()
     {
-        //
+        return view('administrator.status.add', [
+            'title'   => 'Estados',
+            'ajaxAdd' => Jquery::ajaxPost('actionForm', '/admin/status')
+        ]);
+    }
+
+    public function editForm($id)
+    {
+        $status = Status::find($id);
+        if (!$status) {
+            abort(404);
+        }
+        return view('administrator.status.edit', [
+            'title'   => 'Estados',
+            'status' => $status,
+            'ajaxUpdate' => Jquery::ajaxPost('actionForm', '/admin/status')
+        ]);
     }
 
     /**
@@ -77,7 +92,15 @@ class StatusController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $status = Status::find($id);
+        if (!$status) {
+            abort(404);
+        }
+        return view('administrator.status.edit', [
+            'title'   => 'Estados',
+            'status' => $status,
+            'ajaxUpdate' => Jquery::ajaxPost('actionForm', '/admin/status')
+        ]);
     }
 
     /**
@@ -93,6 +116,29 @@ class StatusController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+    {
+        try {
+            $status = Status::find($id);
+            if (!$status) {
+                throw new Exception('Usuario no existe.');
+            }
+            $status->delete();
+            Session::flash('message', 'Datos eliminados!');
+            LoggerHelper::add($request, 'DELETE|OK|STATUS:' . $id . '|' . json_encode($status->toArray()));
+            return response()->json([
+                'success'   => 'ok',
+                'data'      => $status
+            ], 200);
+        } catch (ValidationException $e) {
+            return $this->responseErrorValidattion($request, $e->errors());
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            $message = LoggerHelper::add($request,  $message);
+            return response()->json([
+                'success'   => 'error',
+                'message'   => $message,
+            ], 400);
+        }
+    }
     }
 }

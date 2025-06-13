@@ -120,6 +120,14 @@
                                     <i class="uc-icon icon-small">keyboard_arrow_right</i>
                                 </a>
                             </li>
+                            @if (in_array(1,Session::all()['roles']))
+                            <li>
+                                <a href="/admin">
+                                    Herramientas Administrativas
+                                    <i class="uc-icon icon-small">keyboard_arrow_right</i>
+                                </a>
+                            </li>
+                            @endif
                             <li>
                                 <a href="{{route('logout')}}">
                                     Cerrar Sesión

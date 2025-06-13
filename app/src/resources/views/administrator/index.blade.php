@@ -42,6 +42,12 @@
                             <i class="uc-icon icon-small">chevron_right</i>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin_status') }}" class="uc-btn btn-listed">
+                            Estados
+                            <i class="uc-icon icon-small">chevron_right</i>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

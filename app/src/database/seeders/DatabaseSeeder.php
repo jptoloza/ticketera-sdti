@@ -21,6 +21,14 @@ class DatabaseSeeder extends Seeder
         //     'login' => 'test',
         // ]);
 
+        User::create([
+            'name'     => 'MORALES MENDOZA',
+            'rut'      => '018481447-1',
+            'login'    => 'rmorale',
+            'email'    => 'rmorale@uc.cl',
+            'activate' => '1',
+        ]);
+
         $this->call([
             RolesTableSeeder::class,
             PrioritiesTableSeeder::class,
