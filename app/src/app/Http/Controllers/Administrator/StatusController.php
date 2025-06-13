@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Administrator\AuxiliaryTables;
+namespace App\Http\Controllers\Administrator;
 
 use \Exception;
 use Illuminate\Validation\ValidationException;
@@ -11,20 +11,20 @@ use App\Http\Helpers\Util;
 use App\Models\Role;
 
 
-class RoleController extends Controller
+class StatusController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('administrator.auxiliaryTables.roles.index', [
+        return view('administrator.roles.index', [
           'title'   => 'Roles',
           'ajaxGet' => Jquery::ajaxGet('url', '/admin/roles')
         ]);
     }
 
-    public function getRoles()
+    public function get()
     {
         $roles = Role::select(
             'roles.id',
@@ -36,9 +36,9 @@ class RoleController extends Controller
 
         foreach ($roles as $role) {
             $link   = '
-                <a href="/admin/auxiliaryTables/roles/edit/' . $role->id . '" title="Editar"><span class="uc-icon">edit</span></a>&nbsp;&nbsp;
-                <a href="/admin/auxiliaryTables/roles/delete/' . $role->id . '" class="btnDelete" title="Eleminar"><i class="uc-icon">delete</i></a>&nbsp;&nbsp; 
-                <a href="/admin/auxiliaryTables/roles/userAdd/' . $role->id . '"title="Añadir Usuario "><span class="uc-icon">person_add</span></a>';
+                <a href="/admin/roles/edit/' . $role->id . '" title="Editar"><span class="uc-icon">edit</span></a>&nbsp;&nbsp;
+                <a href="/admin/roles/delete/' . $role->id . '" class="btnDelete" title="Eleminar"><i class="uc-icon">delete</i></a>&nbsp;&nbsp; 
+                <a href="/admin/roles/userAdd/' . $role->id . '"title="Añadir Usuario "><span class="uc-icon">person_add</span></a>';
             $data[] = [
                 $link,
                 $role->active == 1 ? 'Sí' : 'No',

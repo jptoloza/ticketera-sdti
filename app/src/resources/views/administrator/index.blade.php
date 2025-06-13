@@ -1,7 +1,7 @@
-@extends('layout.mainAdmin')
+@extends('layout.main_admin')
 
 @section('content')
-    <div class="mt-2 p-2">
+    <div class="pt-2">
         <ol class="uc-breadcrumb">
             <li class="uc-breadcrumb_item">
                 <a href="/" class="mr-0"><i class="uc-icon">home</i></a>
@@ -25,26 +25,20 @@
             <div class="uc-table-list p-2">
                 <ul class="uc-table-list_content" style="border-top:0 !important;padding-left:0 !important">
                     <li>
-                        <a href="/admin/users" class="uc-btn btn-listed">
+                        <a href="{{ route('admin_users') }}" class="uc-btn btn-listed">
                             Usuarios
                             <i class="uc-icon icon-small">chevron_right</i>
                         </a>
                     </li>
                     <li>
-                        <a href="/admin/roles" class="uc-btn btn-listed">
+                        <a href="{{ route('admin_roles') }}" class="uc-btn btn-listed">
                             Roles
                             <i class="uc-icon icon-small">chevron_right</i>
                         </a>
                     </li>
                     <li>
-                        <a href="/admin/status" class="uc-btn btn-listed">
-                            Estados
-                            <i class="uc-icon icon-small">chevron_right</i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/admin/priorities" class="uc-btn btn-listed">
-                            Prioridades
+                        <a href="{{ route('admin_queues') }}" class="uc-btn btn-listed">
+                            Colas
                             <i class="uc-icon icon-small">chevron_right</i>
                         </a>
                     </li>

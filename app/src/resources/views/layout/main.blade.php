@@ -4,14 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layout Bootstrap 5</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="Sistema de ticketera para la SDTI.">
     <meta name="author" content="SDTI - DTFD UC" />
     <link rel="icon" type="image/png" href="https://web-uc-prod.s3.amazonaws.com/uc-cl/dist/images/favicon.png" />
     <title>@if(isset($title)) {{ $title }} @endif</title>
-
-
 
     <!-- #Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
@@ -62,7 +59,7 @@
     <h1 class="uc-sr-only">[Mesa de Serivios Técnologicos DTFD]</h1>
     @include('layout.header')
 
-    
+
 
     <!-- Contenido Principal -->
     <div class="content-wrapper">
@@ -80,8 +77,39 @@
     </div>
 
     <!-- Footer -->
-     @include('layout.footer')
+    @include('layout.footer')
 
+
+    @if (Session::has('message'))
+        <div id="toast" role="alert" aria-live="assertive" aria-atomic="true"
+            class="toast position-fixed top-0 start-50 translate-middle-x p-3 bg-white p-0 m-3" style="z-index:2000" ;>
+            <div class="uc-alert success">
+                <div class="uc-alert_content">
+                    <i class="uc-icon icon-size--sm">check_circle</i>
+                    <span class="p p-size--sm bold ml-8">{{ Session::get('message') }}</span>
+                </div>
+                <div class="uc-alert_close">
+                    <button type="button" class="btn icon-size--sm" data-bs-dismiss="toast" aria-label="Close"><i
+                            class="uc-icon icon-size--sm">close</i></button>
+                </div>
+            </div>
+        </div>
+        <script>
+            const toastEl = document.getElementById('toast');
+            console.log(toastEl);
+            const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+            toast.show();
+        </script>
+        @php
+            Session::forget('message');
+        @endphp
+    @endif
+
+
+    <div id="loading-super"></div>
+    <div id="loading-progress">
+        <div id="capaprogress" class="cprogress"></div>
+    </div>
 
 </body>
 

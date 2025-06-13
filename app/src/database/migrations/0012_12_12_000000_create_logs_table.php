@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->text('url');
             $table->ipAddress('ip');
-            $table->foreignIdFor(User::class)->nullable()->constrained()->nullOnDelete();
-            $table->json('register');
+            $table->integer('user_id')->nullable;
+            $table->text('register');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -9,18 +9,6 @@
 }
 
 
-
-@media (max-width:540px) {
-    .bc-siga {
-        display: none !important;
-    }
-
-    .btn-siga {
-        width:100%;
-        margin-bottom: 5px;
-    }
-}
-
 table.uc-table_datatable th {
     vertical-align: top !important;
     color: #fff !important;

@@ -8,7 +8,7 @@ class DashboardController extends Controller
 {
     //
 
-    public function Index(Request $request)
+    public function index(Request $request)
     {
         
         return view('dashboard',[

@@ -6,8 +6,9 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Session;
+use App\Models\RequestLog as Log;
 
-class AuthTicket
+class RequestLog
 {
     /**
      * Handle an incoming request.
@@ -16,13 +17,14 @@ class AuthTicket
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $data = Session::all();
+       Log::create([
+            'method'    => $request->method(),
+            'url'       => $request->fullUrl(),
+            'ip'        => $request->ip(),
+            'headers'   => json_encode($request->headers->all()),
+            'body'      => json_encode($request->all()),
+        ]);
 
-
-        if (isset($data['login'])) {
-            return $next($request);    
-        } else {
-            return redirect('/');
-        }
+        return $next($request);    
     }
 }

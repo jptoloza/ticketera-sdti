@@ -21,36 +21,9 @@
             <i class="uc-icon">keyboard_arrow_right</i>
           </a>
         </li>
-      </ul>
-    </li>
-    <li>
-      <a href="#" class="uc-navbar-side_label active">
-        <span class="h5"><i class="uc-icon me-2">local_offer</i>Tickets</span>
-
-      </a>
-      <ul class="uc-navbar-side">
-        <li>
-          <a href="">
-            Mis tickets abiertos (0)
-            <i class="uc-icon">keyboard_arrow_right</i>
-          </a>
-        </li>
         <li>
           <a href="">
             Mis tickets asignados (0)
-            <i class="uc-icon">keyboard_arrow_right</i>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            Mis tickets escalados (0)
-            <i class="uc-icon">keyboard_arrow_right</i>
-          </a>
-        </li>
-
-        <li>
-          <a href="">
-            Mis tickets cerrados
             <i class="uc-icon">keyboard_arrow_right</i>
           </a>
         </li>

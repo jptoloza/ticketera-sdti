@@ -15,11 +15,13 @@
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 px-4 navbar-nav">
 
+                    @if (in_array(1,Session::all()['roles']))
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ route('admin') }}"
                             title="Herramientas de Administración"><span
                                 class="uc-icon text-white">settings</span></i></a>
                     </li>
+                    @endif
 
 
                     <li class="nav-item">

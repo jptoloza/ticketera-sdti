@@ -6,20 +6,27 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Session;
+use App\Models\UserRole;
 
-class AuthTicket
+class AuthRole
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, $role_id = null): Response
     {
         $data = Session::all();
 
+//dd(session());
 
-        if (isset($data['login'])) {
+        //dd($data);
+        $user_id = $data['id'];
+
+        $userRole = UserRole::where('user_id', $user_id)->where('role_id', $role_id)->first();
+
+        if (!empty($userRole)) {
             return $next($request);    
         } else {
             return redirect('/');

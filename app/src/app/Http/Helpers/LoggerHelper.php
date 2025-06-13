@@ -3,6 +3,7 @@
 namespace App\Http\Helpers;
 
 use App\Models\RequestLog;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -11,22 +12,40 @@ class LoggerHelper
     /**
      * 
      */
-    public static function add(Request $request, $message)
+    public static function addRequestLog(Request $request)
     {
-        if (!empty(Session::get('user'))) {
-            $user_id = Session::get('user')->id;
-            $user_login = Session::get('user')->login;
-        } else {
-            $user_id = 0;
-            $user_login = 0;
-        }
-
         RequestLog::create([
             'method'    => $request->method(),
             'url'       => $request->fullUrl(),
             'ip'        => $request->ip(),
             'headers'   => json_encode($request->headers->all()),
-            'body'      => $message,
+            'body'      => $request->all(),
         ]);
+    }
+
+
+    /**
+     * 
+     */
+    public static function add(Request $request, $message)
+    {
+
+        
+
+        if (!empty(Session::all()['id'])) {
+            $user_id = Session::all()['id'];
+        } else {
+            $user_id = 0;
+        }
+        $log = Log::create([
+            'url'       => $request->fullUrl(),
+            'ip'        => $request->ip(),
+            'user_id'   => $user_id,
+            'register'  => $message
+        ]);
+        if (preg_match('/SQLSTATE/', $message)) {
+            $message = "Error de base de datos. Código de registro : " . $log->id;
+        }
+        return $message;
     }
 }

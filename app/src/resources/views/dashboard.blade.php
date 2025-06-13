@@ -6,7 +6,7 @@
 
     <ol class="uc-breadcrumb">
         <li class="uc-breadcrumb_item">
-            <a href="/">Inicio</a>
+            <a href="/"><i class="uc-icon">home</i></a>
             <i class="uc-icon">keyboard_arrow_right</i>
         </li>
         <li class="uc-breadcrumb_item current">Mis ticket abiertos</li>

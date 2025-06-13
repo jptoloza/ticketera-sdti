@@ -306,6 +306,8 @@ aside .nav {
 */
 .uc-icon {
     font-size: 16px !important;
+    margin-left:10px !important;
+    margin-right: 10px !important;
 }
 
 .uc-icon-modal {
@@ -447,13 +449,31 @@ th.table-data-header {
 }
 
 .dt-col-50px {
-    width: 50px;
+    width: 50px !important;
+}
+
+.dt-col-80px {
+    width: 80px !important;
 }
 
 .dt-col-100px {
-    width: 100px;
+    width: 100px !important;
 }
 
+.dt-col-150px {
+    width: 150px !important;
+}
+
+.dt-col-200px {
+    width: 200px !important;
+}
+
+
+table.dataTable > tbody > tr > td > a > .uc-icon {
+    font-size: 16px !important;
+    margin-left:0px !important;
+    margin-right: 0px !important;
+}
 
 @media (max-width: 768px) {
     .content-wrapper {

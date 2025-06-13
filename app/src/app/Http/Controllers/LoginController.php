@@ -11,6 +11,7 @@ use App\Http\Traits\ResponseTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\UtilHelper;
 use Illuminate\Support\Facades\Session;
+use App\Models\UserRole;
 
 define('UC_CAS_VERSION', '2.0');
 define('UC_CAS_HOSTNAME2', env('CAS_HOSTNAME'));
@@ -42,7 +43,7 @@ class LoginController extends Controller
      * 
      * 
      */
-    public function Index(Request $request)
+    public function index(Request $request)
     {
         $data = Session::all();
         if (isset($data['login'])) {
@@ -55,7 +56,7 @@ class LoginController extends Controller
      *
      *
      */
-    public function LoginCAS(Request $request)
+    public function loginCAS(Request $request)
     {
         try {
             if (!phpCAS::isAuthenticated()) {
@@ -81,12 +82,18 @@ class LoginController extends Controller
                 }
                 $data = $user->toArray();
                 $data['navbar_name'] = UtilHelper::navbarName($data['name']);
-                Session($data);
+                $userRoles = UserRole::where('user_id', $user->id)->select('role_id')->get();
+                $roles = [];
+                foreach($userRoles as $userRol) {
+                    $roles[] = $userRol->role_id;
+                }
+                $data['roles'] = $roles;
+                Session($data); 
                 LoggerHelper::add($request, 'Login CAS OK: ' . $userCas);
-
                 return redirect()->route('dashboard');
             }
         } catch (Exception $e) {
+            dd($e);
             abort(401);
         }
     }
@@ -95,7 +102,7 @@ class LoginController extends Controller
      *
      *
      */
-    public function Logout(Request $request)
+    public function logout(Request $request)
     {
         Session::flush();
         $request->session()->invalidate();
