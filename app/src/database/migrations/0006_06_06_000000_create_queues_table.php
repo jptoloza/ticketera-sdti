@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('queues', function (Blueprint $table) {
             $table->id();
             $table->string('queue');
-            $table->enum('active', ['0','1'])->default('1');
+            $table->boolean('active')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

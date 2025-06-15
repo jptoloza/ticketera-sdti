@@ -64,30 +64,33 @@ class LoginController extends Controller
             } else {
                 $attributes = phpCAS::getAttributes();
                 $userCas = phpCAS::getUser();
-                $user = User::where('login', '=', $userCas)
+                $email      = phpCAS::getAttribute('mail');
+                $rut        = phpCAS::getAttribute('carlicense');
+                $first_name = phpCAS::getAttribute('nombre');
+                $last_name  = phpCAS::getAttribute('apellidos');
+                $name       = trim($first_name . ' ' . $last_name);
+                $email      = $email != null ? $email : $userCas . '@uc.cl';
+                $user = User::withTrashed()
+                        ->where('login', '=', $userCas)
+                        ->orWhere('email','=',$email)
                     ->first();
-                if ($user == NULL) {
-                    $email = phpCAS::getAttribute('mail');
-                    $rut = phpCAS::getAttribute('carlicense');
-                    $first_name = phpCAS::getAttribute('nombre');
-                    $last_name = phpCAS::getAttribute('apellidos');
-                    $name = trim($first_name . ' ' . $last_name);
+                if (is_null($user)) {
                     $user = User::create([
                         'login' => $userCas,
-                        'email' => $email != null ? $email : $userCas . '@uc.cl',
+                        'email' => $email,
                         'rut'   => $rut,
                         'name'  => $name,
                     ]);
                     LoggerHelper::add($request, 'CREATE USER: ' . $userCas);
+                } else {
+                    if (!is_null($user->deleted_at)) {
+                        $user->active = true;
+                        $user->deleted_at = null;
+                        $user->save();
+                    }
                 }
                 $data = $user->toArray();
                 $data['navbar_name'] = UtilHelper::navbarName($data['name']);
-                $userRoles = UserRole::where('user_id', $user->id)->select('role_id')->get();
-                $roles = [];
-                foreach($userRoles as $userRol) {
-                    $roles[] = $userRol->role_id;
-                }
-                $data['roles'] = $roles;
                 Session($data); 
                 LoggerHelper::add($request, 'Login CAS OK: ' . $userCas);
                 return redirect()->route('dashboard');

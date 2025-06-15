@@ -13,10 +13,19 @@ class PrioritiesTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $priorities = ['Baja', 'Media', 'Alta', 'Crítica'];
+        $priorities = [
+            [ 'priority' => 'BAJA', 'global_key' => 'PRIORITY_LOW' ],
+            [ 'priority' => 'MEDIA', 'global_key' => 'PRIORITY_HALF' ],
+            [ 'priority' => 'ALTA', 'global_key' => 'PRIORITY_HIGH' ],
+            [ 'priority' => 'CRÍTICA', 'global_key' => 'PRIORITY_CRITICAL' ]
+        ];
 
         foreach ($priorities as $priority) {
-            Priority::firstOrCreate(['priority' => $priority], ['active' => '1']);
+            Priority::firstOrCreate([
+                'priority' => $priority['priority'],
+                'global_key' => $priority['global_key'],
+                'active' => true
+            ]);
         }
     }
 }

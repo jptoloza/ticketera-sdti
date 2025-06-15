@@ -9,7 +9,7 @@ class Priority extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['priority', 'active'];
+    protected $fillable = ['priority', 'global_key', 'active'];
 
     public function tickets()
     {

@@ -14,15 +14,13 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 px-4 navbar-nav">
-
-                    @if (in_array(1,Session::all()['roles']))
+                    @if (in_array(App\Http\Helpers\UtilHelper::globalKey('ROLE_ADMINISTRATOR'),Session::all()['roles']))
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ route('admin') }}"
                             title="Herramientas de Administración"><span
                                 class="uc-icon text-white">settings</span></i></a>
                     </li>
                     @endif
-
 
                     <li class="nav-item">
                         <a class="nav-link navbar-nav-user-img bg-uc-blue-3" style="padding-left:8px;"
@@ -120,7 +118,7 @@
                                     <i class="uc-icon icon-small">keyboard_arrow_right</i>
                                 </a>
                             </li>
-                            @if (in_array(1,Session::all()['roles']))
+                            @if (in_array(App\Http\Helpers\UtilHelper::globalKey('ROLE_ADMINISTRATOR'),Session::all()['roles']))
                             <li>
                                 <a href="/admin">
                                     Herramientas Administrativas

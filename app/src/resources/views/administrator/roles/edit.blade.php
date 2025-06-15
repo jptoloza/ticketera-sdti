@@ -51,18 +51,24 @@
                     <div class="uc-form-group">
                         <label for="first_name">Nombre Rol <span class="text-danger">*</span></label>
                         <input id="name" name="name" type="text" class="uc-input-style" placeholder="Ingrese nombre rol"
-                            required value="{{ $role->role }}"/>
+                            required value="{{ $role->role }}" />
                     </div>
+                    <div class="uc-form-group">
+                        <label for="first_name">Global Key <span class="text-danger">*</span></label>
+                        <input id="global_key" name="global_key" type="text" class="uc-input-style"
+                            placeholder="Ingrese global key" required value="{{ $role->global_key }}" />
+                    </div>
+
                     <div class="uc-form-group">
                         <div>
                             <label for="active">Rol Activo <span class="text-danger">*</span></label>
                         </div>
                         <div>
-                            <input type="radio" name="active" value="1" @if ($role->active) checked @endif/>
+                            <input type="radio" name="active" value="1" @if ($role->active) checked @endif />
                             <label class="fw-normal">Si</label>
                         </div>
                         <div>
-                            <input type="radio" name="active" value="0" @if (!$role->active) checked @endif/>
+                            <input type="radio" name="active" value="0" @if (!$role->active) checked @endif />
                             <label class="fw-normal">No</label>
                         </div>
                     </div>

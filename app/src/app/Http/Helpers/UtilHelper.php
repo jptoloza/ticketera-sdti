@@ -120,9 +120,6 @@ class UtilHelper
     }
 
 
-    
-    
-
     /**
      * 
      */
@@ -131,4 +128,23 @@ class UtilHelper
         $string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
         return preg_replace('/[^a-zA-Z0-9\s]/', '', $string);
     }
+
+
+    /**
+     * 
+     * 
+     */
+    public static function globalKey($key = null)
+    {
+        if (is_null($key)) return null;
+
+        $modelArray = explode("_",$key);
+        $modelName = mb_convert_case($modelArray[0], MB_CASE_TITLE);
+
+        $modelInstance = app('App\\Models\\' . $modelName);
+        $record = $modelInstance::where('global_key', '=', $key)->where('active',true)->first();
+        return is_null($record) ? null : $record->id;
+
+    }
+
 }

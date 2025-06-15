@@ -4,8 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use App\Http\Helpers\SessionHelper;
 use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthTicket
 {
@@ -16,11 +17,9 @@ class AuthTicket
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $data = Session::all();
-
-
-        if (isset($data['login'])) {
-            return $next($request);    
+        $session = SessionHelper::current();
+        if (isset($session->id)) {
+            return $next($request);
         } else {
             return redirect('/');
         }

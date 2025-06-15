@@ -15,23 +15,22 @@
         </ol>
 
         <div class="d-flex align-items-center">
-            <h1>Roles</h1>
+            <h1>Estados</h1>
             <span class="uc-heading-decoration"></span>
         </div>
 
 
         <div class="mt-2 bg-white p-2 border border-gray rounded-1">
             <div class="p-2 p-size--lg">
-                Esta sección permite administrar la información base de los roles deusuarios del sistema, facilitando un
-                registro
-                claro y organizado.
+                Esta sección permite administrar la información base de los estados de los tickets del sistema, facilitando un
+                registro claro y organizado.
             </div>
 
 
 
 
             <div class="p-2 mb-2 pl-0">
-                <a href="{{ route('admin_roles') }}" class="uc-btn d-block fw-bold text-decoration-none">
+                <a href="{{ route('admin_status') }}" class="uc-btn d-block fw-bold text-decoration-none">
                     <i class="uc-icon icon-shape--rounded">arrow_back</i>
                     Volver
                 </a>
@@ -40,16 +39,16 @@
             <hr class="uc-hr" />
 
             <div class="mx-2">
-                <form name="actionForm" id="actionForm" method="POST" action="{{ route('admin_roles_add') }}">
+                <form name="actionForm" id="actionForm" method="POST" action="{{ route('admin_status_add') }}">
                     @csrf
-                    <h4>Nuevo Rol</h4>
+                    <h4>Nuevo Estado</h4>
                     <div class="uc-text-divider divider-primary mt-16 mb-4"></div>
                     <div class="p-size--sm p-text--condensed p-color--gray mb-4 mt-2">
                         <span class="text-danger">*</span> Campo obligatorio.
                     </div>
                     <div class="uc-form-group">
-                        <label for="first_name">Nombre Rol <span class="text-danger">*</span></label>
-                        <input id="name" name="name" type="text" class="uc-input-style" placeholder="Ingrese nombre rol"
+                        <label for="first_name">Nombre Estado <span class="text-danger">*</span></label>
+                        <input id="name" name="name" type="text" class="uc-input-style" placeholder="Ingrese nombre estado"
                             required />
                     </div>
                     <div class="uc-form-group">
@@ -59,7 +58,7 @@
                     </div>
                     <div class="uc-form-group">
                         <div>
-                            <label for="active">Rol Activo <span class="text-danger">*</span></label>
+                            <label for="active">Estado Activo <span class="text-danger">*</span></label>
                         </div>
                         <div>
                             <input type="radio" name="active" value="1" />

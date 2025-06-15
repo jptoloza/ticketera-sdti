@@ -1,19 +1,20 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\AuthTicket;
 use App\Http\Middleware\AuthRole;
+use App\Http\Middleware\AuthTicket;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Administrator\IndexController as DashboardAdminController;
-use App\Http\Controllers\Administrator\UserController;
-
-use App\Http\Controllers\Agent\RequestsController as AgentRequestController;
-use App\Http\Controllers\Users\RequestsController as UsersRequestController;
-
+use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\Administrator\RoleController;
+use App\Http\Controllers\Administrator\UserController;
 use App\Http\Controllers\Administrator\QueuesController;
 use App\Http\Controllers\Administrator\StatusController;
+//
+//
+use App\Http\Controllers\Agent\RequestsController as AgentRequestController;
+use App\Http\Controllers\Users\RequestsController as UsersRequestController;
+use App\Http\Controllers\Administrator\IndexController as DashboardAdminController;
 
 
 
@@ -31,28 +32,33 @@ Route::middleware([AuthTicket::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
+    // Tickets
+    Route::get('/tickets/add', [TicketsController::class, 'create'])
+        ->name('tickets_addForm');
+
+    Route::post('/tickets/add', [TicketsController::class, 'store'])
+        ->name('tickets_add');
+
+    Route::get('/tickets/userSearch', [TicketsController::class, 'userSearch'])
+        ->name('tickets_userSearch');
+
+    Route::get('/tickets/agentsQueue', [TicketsController::class, 'agentQueue'])
+        ->name('tickets_agentsQueue');
+
+
+    Route::post('/tickets/addUser', [TicketsController::class, 'addUser'])
+        ->name('tickets_newUser');
 
 
 
 
 
-    //
-    Route::get('/agent/request/{id}', [AgentRequestController::class, 'show'])
-        ->name('agent_reqest_id');
-    Route::get('/agent/request', [AgentRequestController::class, 'index'])
-        ->name('agent_request');
-
-    //
-    Route::get('/users/request/[id]', [UsersRequestController::class, 'index'])
-        ->name('user_request_id');
-    Route::get('/users/request', [UsersRequestController::class, 'show'])
-        ->name('user_request');
 
 
 
+    // Admin
 
-
-    Route::middleware([AuthRole::class . ':1'])->group(function () {
+    Route::middleware([AuthRole::class . ':ROLE_ADMINISTRATOR'])->group(function () {
 
         // Admin Routes //
         Route::get('/admin', [DashboardAdminController::class, 'index'])
@@ -112,11 +118,7 @@ Route::middleware([AuthTicket::class])->group(function () {
             ->name('admin_roles_users_delete');
 
 
-
-
-        // AKI
-
-       // Queues
+        // Queues
         Route::get('/admin/queues/', [QueuesController::class, 'index'])
             ->name('admin_queues');
 
@@ -155,19 +157,39 @@ Route::middleware([AuthTicket::class])->group(function () {
         Route::get('/admin/status/get', [StatusController::class, 'get'])
             ->name('admin_status_get');
 
-        Route::get('/admin/status/add', [StatusController::class, 'addForm'])
+        Route::get('/admin/status/add', [StatusController::class, 'create'])
             ->name('admin_status_addForm');
 
-        Route::post('/admin/status/add', [StatusController::class, 'add'])
-            ->name('admin_statusadd');
+        Route::post('/admin/status/add', [StatusController::class, 'store'])
+            ->name('admin_status_add');
 
-        Route::get('/admin/status/edit/{id}', [StatusController::class, 'editForm'])
+        Route::get('/admin/status/edit/{id}', [StatusController::class, 'edit'])
             ->name('admin_status_editForm');
 
-        Route::post('/admin/status/edit', [StatusController::class, 'edit'])
+        Route::post('/admin/status/edit', [StatusController::class, 'update'])
             ->name('admin_status_edit');
 
-        Route::get('/admin/status/delete/{id}', [StatusController::class, 'delete'])
+        Route::get('/admin/status/delete/{id}', [StatusController::class, 'destroy'])
             ->name('admin_status_delete');
     });
+
+
+
+
+    // Agents
+    Route::middleware([AuthRole::class . ':ROLE_AGENT'])->group(function () {
+
+        // Admin Routes //
+        Route::get('/agent/queues/{id}', [DashboardAdminController::class, 'index'])
+            ->name('agent_queues');
+    });
+
+
+
+
+    //
+    Route::get('/agent/request/{id}', [AgentRequestController::class, 'show'])
+        ->name('agent_reqest_id');
+    Route::get('/agent/request', [AgentRequestController::class, 'index'])
+        ->name('agent_request');
 });

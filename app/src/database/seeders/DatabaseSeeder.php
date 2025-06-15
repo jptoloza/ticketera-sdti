@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'rut'      => '018481447-1',
             'login'    => 'rmorale',
             'email'    => 'rmorale@uc.cl',
-            'activate' => '1',
+            'active'    => true,
         ]);
 
         $this->call([

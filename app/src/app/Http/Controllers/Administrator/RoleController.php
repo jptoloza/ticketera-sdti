@@ -3,19 +3,17 @@
 namespace App\Http\Controllers\Administrator;
 
 use \Exception;
-use Illuminate\Validation\ValidationException;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Helpers\Jquery;
-use App\Http\Helpers\Util;
 use App\Models\Role;
-use Illuminate\Support\Facades\Session;
-use App\Http\Helpers\LoggerHelper;
-use App\Http\Helpers\UtilHelper;
-use App\Http\Traits\ResponseTrait;
-use App\Models\UserRole;
 use App\Models\User;
-use Illuminate\Log\Logger;
+use App\Models\UserRole;
+use App\Http\Helpers\Jquery;
+use Illuminate\Http\Request;
+use App\Http\Helpers\UtilHelper;
+use App\Http\Helpers\LoggerHelper;
+use App\Http\Traits\ResponseTrait;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class RoleController extends Controller
 {
@@ -34,21 +32,16 @@ class RoleController extends Controller
 
     public function get()
     {
-        $roles = Role::select(
-            'roles.id',
-            'roles.role',
-            'roles.active',
-        )->get();
-
+        $roles = Role::select('id', 'role', 'global_key', 'active')->orderBy('id')->get();
         $data = [];
-
         foreach ($roles as $role) {
             $link   = '<a href="' . route('admin_roles_editForm', ['id' => $role->id]) . '" title="Editar"><span class="uc-icon">edit</span></a> 
                 <a href="' . route('admin_roles_delete', ['id' => $role->id]) . '" class="btnDelete" title="Eleminar"><i class="uc-icon">delete</i></a>  
                 <a href="' . route('admin_roles_users', ['id' => $role->id]) . '"title="Añadir Usuario "><span class="uc-icon">person_add</span></a>';
             $data[] = [
                 $link,
-                $role->active == 1 ? 'Sí' : 'No',
+                $role->active ? 'Sí' : 'No',
+                $role->global_key,
                 $role->role,
             ];
         }
@@ -74,19 +67,27 @@ class RoleController extends Controller
         try {
             $validated = $request->validate([
                 'name'              => ['required'],
+                'global_key'        => ['required'],
                 'active'            => 'required',
             ], [
                 'name'              => 'Nombre no es válido.',
-                'active'            => 'Usuario Activo no es válido.',
+                'global_key'        => 'Global Key no es válido.',
+                'active'            => 'Activo no es válido.',
             ]);
 
-            $role = Role::where('role', '=', $request->input('name'))->first();
+
+            $name = mb_convert_case($request->input('name'), MB_CASE_UPPER);
+            $global_key = mb_convert_case($request->input('global_key'), MB_CASE_UPPER);
+
+            $role = Role::where('role', $name)
+                ->where('global_key', $global_key)->first();
             if ($role) {
                 throw new Exception('Rol registrado anteriormente.');
             }
             $role = new Role();
-            $role->role     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
-            $role->active   = $request->input('active');
+            $role->role         = $name;
+            $role->global_key   = $global_key;
+            $role->active       = (int) $request->input('active') == 1 ? true : false;
             $role->save();
 
             Session::flash('message', 'Datos guardados!');
@@ -134,18 +135,22 @@ class RoleController extends Controller
             $validated = $request->validate([
                 'id'       => ['required'],
                 'name'     => ['required'],
+                'global_key'     => ['required'],
                 'active'   => 'required',
             ], [
                 'id'       => 'ID no es válido',
                 'name'     => 'Nombre no es válido.',
+                'global_key'        => 'Global Key no es válido.',
                 'active'   => 'Usuario Activo no es válido.',
             ]);
 
+            $name     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
+            $global_key = mb_convert_case($request->input('global_key'), MB_CASE_UPPER);
             $role = Role::find($request->input('id'));
             if (!$role) {
                 throw new Exception('Rol no registrado.');
             }
-            $roles = Role::where('role', '=', $request->input('name'));
+            $roles = Role::where('role', $name)->orWhere('global_key',$global_key);
             if ($roles->count() > 0) {
                 foreach ($roles->get() as $uurole) {
                     $uurole = (object)$uurole;
@@ -155,7 +160,8 @@ class RoleController extends Controller
                 }
             }
             $role->role     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
-            $role->active   = $request->input('active');
+            $role->global_key = mb_convert_case($request->input('global_key'), MB_CASE_UPPER);
+            $role->active   = (int) $request->input('active') == 1 ? true : false;
             $role->save();
 
             Session::flash('message', 'Datos guardados!');
@@ -221,8 +227,8 @@ class RoleController extends Controller
             ->join('roles AS B', 'user_roles.role_id', '=', 'B.id')
             ->select('user_roles.id', 'A.id as user_id', 'A.rut', 'A.name', 'A.email', 'B.role')
             ->where('user_roles.role_id', '=', $id)
-            ->where('A.activate', '=', '1')
-            ->where('B.active', '=', '1')
+            ->where('A.active', '=', true)
+            ->where('B.active', '=', true)
             ->orderBy('A.name', 'asc')
             ->get();
 
@@ -232,8 +238,7 @@ class RoleController extends Controller
             $data[$value->id] = $_data;
         }
         $dataUsers = [];
-        $users = User::where('activate', '=', '1')
-            //            ->whereNull('U.deleted_at')
+        $users = User::where('active', '=', true)
             ->get();
         foreach ($users as $user) {
             $dataUsers[$user->id] = UtilHelper::ucTexto($user->name) . ' ( ' . $user->email . ' / ' . $user->rut . ' )';
@@ -277,7 +282,7 @@ class RoleController extends Controller
             $userRole->user_id = $request->input('user_id');
             $userRole->save();
             Session::flash('message', 'Datos guardados!');
-            LoggerHelper::add($request,'ADD|OK|USER_ROLE:', $userRole->id);
+            LoggerHelper::add($request, 'ADD|OK|USER_ROLE:' . $userRole->id);
             return response()->json([
                 'success'   => 'ok',
                 'data'      => $userRole
@@ -286,7 +291,7 @@ class RoleController extends Controller
             return $this->responseErrorValidattion($request, $e->errors());
         } catch (Exception $e) {
             $message = $e->getMessage();
-            $message = LoggerHelper::add($request,$message);
+            $message = LoggerHelper::add($request, $message);
             return response()->json([
                 'success'   => 'error',
                 'message'   => $message,
@@ -308,7 +313,7 @@ class RoleController extends Controller
             }
             $userRole->delete();
             Session::flash('message', 'Datos eliminados!');
-            LoggerHelper::add($request,'DELETE|OK|USER_ROLE:', $id);
+            LoggerHelper::add($request, 'DELETE|OK|USER_ROLE:' . $id);
 
             return response()->json([
                 'success'   => 'ok',
@@ -318,7 +323,7 @@ class RoleController extends Controller
             return $this->responseErrorValidattion($request, $e->errors());
         } catch (Exception $e) {
             $message = $e->getMessage();
-            $message = LoggerHelper::add($request,$message);
+            $message = LoggerHelper::add($request, $message);
             return response()->json([
                 'success'   => 'error',
                 'message'   => $message,

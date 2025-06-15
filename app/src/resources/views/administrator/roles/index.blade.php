@@ -39,6 +39,7 @@
                             <tr>
                                 <th>Acción</th>
                                 <th>Activo</th>
+                                <th>Global Key</th>
                                 <th>Descripción</th>
                             </tr>
                         </thead>
@@ -75,6 +76,10 @@
                     className: 'align-top dt-col-50px'
                 },
                 {
+                    className: 'align-top dt-col-50px'
+                },
+
+                {
                     className: 'align-top'
                 },
                 ]
@@ -86,26 +91,26 @@
                 url = $(this).attr('href');
 
                 var modal = `<div id="message" class="modal">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="uc-message warning siga-message">
-                    <a href="#" class="uc-message_close-button" data-bs-dismiss="modal"><i class="uc-icon">close</i></a>
-                    <div class="uc-message_body">
-                      <h2 class="mb-24">
-                        <i class="uc-icon warning-icon uc-icon-modal">warning</i> Eliminar Registro
-                      </h2>
-                      <p class="no-margin">
-                        Está seguro de eliminar el registro ?
-                      </p>
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="uc-message warning siga-message">
+                        <a href="#" class="uc-message_close-button" data-bs-dismiss="modal"><i class="uc-icon">close</i></a>
+                        <div class="uc-message_body">
+                          <h2 class="mb-24">
+                            <i class="uc-icon warning-icon uc-icon-modal">warning</i> Eliminar Registro
+                          </h2>
+                          <p class="no-margin">
+                            Está seguro de eliminar el registro ?
+                          </p>
+                        </div>
+                      </div>
+                      <div class="modal-footer modal-footer-confirm">
+                        <button type="button" class="uc-btn btn-cta btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="uc-btn btn-cta" id="btnNext">Sí, Continuar</button>
+                      </div>
                     </div>
                   </div>
-                  <div class="modal-footer modal-footer-confirm">
-                    <button type="button" class="uc-btn btn-cta btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="uc-btn btn-cta" id="btnNext">Sí, Continuar</button>
-                  </div>
-                </div>
-              </div>
-            </div>`;
+                </div>`;
                 $('body').append(modal);
                 $('#message').modal('show');
                 $('#btnNext').click(function () {

@@ -29,3 +29,22 @@ table.uc-table_datatable td.datatable_col_w150_center {
     width: 150px !important;
     text-align: center !important;
 }
+
+a, .uc-navbar-side li {
+  outline: none;
+  box-shadow: none;
+}
+
+*:focus, .uc-navbar-side li {
+  outline: none;
+}
+
+a:focus:not(:focus-visible) {
+  outline: none;
+}
+
+a:focus, .uc-navbar-side li:focus {
+  outline: none;
+  box-shadow: 0 0 0 0px rgba(0, 123, 255, 0.5);
+}
+

@@ -14,13 +14,13 @@ class StatusTableSeeder extends Seeder
     public function run(): void
     {
         Status::insert([
-            ['status' => 'Abierto',    'active' => '1', 'global_id' => 'GLOBAL_OPEN'],
-            ['status' => 'Asignado',   'active' => '1', 'global_id' => 'GLOBAL_ASSIGNED'],
-            ['status' => 'Reasignado', 'active' => '1', 'global_id' => 'GLOBAL_REASSIGNED'],
-            ['status' => 'En progreso','active' => '1', 'global_id' => 'GLOBAL_IN_PROGRESS'],
-            ['status' => 'Escalado',   'active' => '1', 'global_id' => 'GLOBAL_ESCALATED'],
-            ['status' => 'Cerrado',    'active' => '1', 'global_id' => 'GLOBAL_CLOSED'],
-            ['status' => 'Cancelado',  'active' => '1', 'global_id' => 'GLOBAL_CANCELLED'],
+            ['status' => 'ABIERTO',     'active' => true, 'global_key' => 'STATUS_OPEN'],
+            ['status' => 'ASIGNADO',    'active' => true, 'global_key' => 'STATUS_ASSIGNED'],
+            ['status' => 'REASIGNADO',  'active' => true, 'global_key' => 'STATUS_REASSIGNED'],
+            ['status' => 'EN EJECUCIÓN','active' => true, 'global_key' => 'STATUS_IN_PROGRESS'],
+            ['status' => 'ESCALADO',    'active' => true, 'global_key' => 'STATUS_ESCALATED'],
+            ['status' => 'CERRADO',     'active' => true, 'global_key' => 'STATUS_CLOSED'],
+            ['status' => 'CANCELADO',   'active' => true, 'global_key' => 'STATUS_CANCELLED'],
         ]);
     }
 }

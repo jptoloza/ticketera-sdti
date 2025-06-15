@@ -13,10 +13,18 @@ class RolesTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = ['Administrador', 'Agente', 'Usuario'];
+        $roles = [
+            [ 'role' => 'ADMINISTRADOR', 'global_key' => 'ROLE_ADMINISTRATOR' ],
+            [ 'role' => 'AGENTE', 'global_key' => 'ROLE_AGENT' ],
+            [ 'role' => 'USURIO', 'global_key' => 'ROLE_USER' ],
+        ];
 
         foreach ($roles as $role) {
-            Role::firstOrCreate(['role' => $role], ['active' => '1']);
+            Role::firstOrCreate([
+                'role' => $role['role'],
+                'global_key' => $role['global_key'],
+                'active' => true
+            ]);
         }
     }
 }

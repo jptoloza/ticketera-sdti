@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('logs_tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Ticket::class)->constrained()->cascadeOnDelete();
-            $table->string('action');
             $table->json('data')->nullable();
+            $table->string('action');
             $table->timestamps();
             $table->softDeletes();
         });

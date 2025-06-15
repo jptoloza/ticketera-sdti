@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Administrator;
 
 use \Exception;
-use Illuminate\Validation\ValidationException;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Helpers\Jquery;
 use App\Models\User;
-use App\Http\Helpers\UtilHelper;
-use Illuminate\Support\Facades\Session;
-use App\Http\Traits\ResponseTrait;
-use App\Http\Helpers\LoggerHelper;
-use Illuminate\Support\Facades\DB;
+use App\Http\Helpers\Jquery;
+use Illuminate\Http\Request;
 use App\Http\Helpers\RutRule;
+use App\Http\Helpers\UtilHelper;
+use App\Http\Helpers\UserSession;
+use App\Http\Helpers\LoggerHelper;
+use App\Http\Traits\ResponseTrait;
+use App\Http\Controllers\Controller;
+use App\Http\Helpers\SessionHelper;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -35,20 +36,13 @@ class UserController extends Controller
      */
     public function get()
     {
-        $users = User::select(
-            'users.id',
-            'users.name',
-            'users.rut',
-            'users.login',
-            'users.email',
-            'users.activate',
-        )->get();
+        $users = User::select('id','name','rut','login','email','active')->orderBy('id')->get();
         $data = [];
         foreach ($users as $user) {
             $link   = '<a href="' . route('admin_users_editForm', $user->id) . '" title="Editar"><span class="uc-icon">edit</span></a> <a href="' . route('admin_users_delete', $user->id) . '" class="btnDelete" title="Eliminar"><i class="uc-icon">delete</i></a>';
             $data[] = [
                 $link,
-                $user->activate == 1 ? 'Sí' : 'No',
+                $user->active ? 'Sí' : 'No',
                 $user->email,
                 $user->login,
                 $user->rut,
@@ -103,7 +97,7 @@ class UserController extends Controller
             $user->login    = mb_convert_case($request->input('login'), MB_CASE_LOWER);
             $user->rut      = $rut;
             $user->name     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
-            $user->activate = $request->input('active');
+            $user->active   = (int) $request->input('active') == 1 ? true : false;
             $user->save();
 
             Session::flash('message', 'Datos guardados!');
@@ -185,7 +179,7 @@ class UserController extends Controller
             $user->login    = mb_convert_case($request->input('login'), MB_CASE_LOWER);
             $user->rut      = $rut;
             $user->name     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
-            $user->activate = $request->input('active');
+            $user->active   = (int) $request->input('active') == 1 ? true : false;
             $user->save();
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request,  'UPDATE|OK|USER:' . $user->id);
@@ -211,6 +205,10 @@ class UserController extends Controller
     public function destroy(Request $request, $id = 0)
     {
         try {
+            $userSessionId = SessionHelper::current()->id;
+            if ($userSessionId == $id) {
+                throw new Exception('No puede borrar el usuario.');                
+            }
             $user = User::find($id);
             if (!$user) {
                 throw new Exception('Usuario no existe.');

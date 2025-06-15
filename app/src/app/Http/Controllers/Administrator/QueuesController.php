@@ -3,21 +3,18 @@
 namespace App\Http\Controllers\Administrator;
 
 use \Exception;
-use Illuminate\Validation\ValidationException;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Helpers\Jquery;
-use App\Http\Helpers\Util;
 use App\Models\Role;
-use Illuminate\Support\Facades\Session;
-use App\Http\Helpers\LoggerHelper;
-use App\Http\Helpers\UtilHelper;
-use App\Http\Traits\ResponseTrait;
-use App\Models\UserRole;
 use App\Models\User;
-use Illuminate\Log\Logger;
 use App\Models\Queue;
 use App\Models\QueueUser;
+use App\Http\Helpers\Jquery;
+use Illuminate\Http\Request;
+use App\Http\Helpers\UtilHelper;
+use App\Http\Helpers\LoggerHelper;
+use App\Http\Traits\ResponseTrait;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class QueuesController extends Controller
 {
@@ -36,21 +33,15 @@ class QueuesController extends Controller
 
     public function get()
     {
-        $queues = Queue::select(
-            'queues.id',
-            'queues.queue',
-            'queues.active',
-        )->get();
-
+        $queues = Queue::select('id','queue','active')->orderBy('id')->get();
         $data = [];
-
         foreach ($queues as $queue) {
             $link   = '<a href="' . route('admin_queues_editForm', ['id' => $queue->id]) . '" title="Editar"><span class="uc-icon">edit</span></a> 
                 <a href="' . route('admin_queues_delete', ['id' => $queue->id]) . '" class="btnDelete" title="Eleminar"><i class="uc-icon">delete</i></a>  
                 <a href="' . route('admin_queues_users', ['id' => $queue->id]) . '"title="Añadir Usuario "><span class="uc-icon">person_add</span></a>';
             $data[] = [
                 $link,
-                $queue->active == 1 ? 'Sí' : 'No',
+                $queue->active ? 'Sí' : 'No',
                 $queue->queue,
             ];
         }
@@ -87,8 +78,8 @@ class QueuesController extends Controller
                 throw new Exception('Rol registrado anteriormente.');
             }
             $queue = new Queue();
-            $queue->queue     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
-            $queue->active   = $request->input('active');
+            $queue->queue    = mb_convert_case($request->input('name'), MB_CASE_UPPER);
+            $queue->active   = (int) $request->input('active') == 1 ? true : false;
             $queue->save();
 
             Session::flash('message', 'Datos guardados!');
@@ -156,8 +147,8 @@ class QueuesController extends Controller
                     }
                 }
             }
-            $queue->queue     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
-            $queue->active   = $request->input('active');
+            $queue->queue    = mb_convert_case($request->input('name'), MB_CASE_UPPER);
+            $queue->active   = (int) $request->input('active') == 1 ? true : false;
             $queue->save();
 
             Session::flash('message', 'Datos guardados!');
@@ -223,8 +214,8 @@ class QueuesController extends Controller
             ->join('queues AS B', 'queue_users.queue_id', '=', 'B.id')
             ->select('queue_users.id', 'A.id as user_id', 'A.rut', 'A.name', 'A.email', 'B.queue')
             ->where('queue_users.queue_id', '=', $id)
-            ->where('A.activate', '=', '1')
-            ->where('B.active', '=', '1')
+            ->where('A.active', '=', true)
+            ->where('B.active', '=', true)
             ->orderBy('A.name', 'asc')
             ->get();
 
@@ -242,7 +233,7 @@ class QueuesController extends Controller
             ->toArray();
 
         $users = User::join('user_roles', 'users.id', '=', 'user_roles.user_id')
-            ->where('users.activate', '1')
+            ->where('users.active', true)
             ->where('user_roles.role_id', $agentRoleId)
             ->whereNotIn('users.id', $assignedUserIds)
             ->select('users.*')
@@ -291,7 +282,7 @@ class QueuesController extends Controller
             $userQueue->user_id = $request->input('user_id');
             $userQueue->save();
             Session::flash('message', 'Datos guardados!');
-            LoggerHelper::add($request,'ADD|OK|USER_QUEUE:', $userQueue->id);
+            LoggerHelper::add($request, 'ADD|OK|USER_QUEUE:', $userQueue->id);
             return response()->json([
                 'success'   => 'ok',
                 'data'      => $userQueue
@@ -300,7 +291,7 @@ class QueuesController extends Controller
             return $this->responseErrorValidattion($request, $e->errors());
         } catch (Exception $e) {
             $message = $e->getMessage();
-            $message = LoggerHelper::add($request,$message);
+            $message = LoggerHelper::add($request, $message);
             return response()->json([
                 'success'   => 'error',
                 'message'   => $message,
@@ -322,7 +313,7 @@ class QueuesController extends Controller
             }
             $userQueue->delete();
             Session::flash('message', 'Datos eliminados!');
-            LoggerHelper::add($request,'DELETE|OK|USER_QUEUE:', $id);
+            LoggerHelper::add($request, 'DELETE|OK|USER_QUEUE:', $id);
 
             return response()->json([
                 'success'   => 'ok',
@@ -332,7 +323,7 @@ class QueuesController extends Controller
             return $this->responseErrorValidattion($request, $e->errors());
         } catch (Exception $e) {
             $message = $e->getMessage();
-            $message = LoggerHelper::add($request,$message);
+            $message = LoggerHelper::add($request, $message);
             return response()->json([
                 'success'   => 'error',
                 'message'   => $message,

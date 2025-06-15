@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('rut');
             $table->string('login')->unique();
             $table->string('email')->unique();
-            $table->enum('activate', ['0','1'])->default('1');
+            $table->boolean('active')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

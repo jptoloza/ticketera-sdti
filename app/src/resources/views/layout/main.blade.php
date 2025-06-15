@@ -96,7 +96,6 @@
         </div>
         <script>
             const toastEl = document.getElementById('toast');
-            console.log(toastEl);
             const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
             toast.show();
         </script>

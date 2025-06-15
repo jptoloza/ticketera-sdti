@@ -12,7 +12,7 @@ class Status extends Model
     
     protected $table = 'status';
 
-    protected $fillable = ['status', 'active'];
+    protected $fillable = ['status', 'global_key', 'active'];
 
     public function tickets()
     {

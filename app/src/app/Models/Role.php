@@ -9,7 +9,7 @@ class Role extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['role', 'active'];
+    protected $fillable = ['role', 'global_key', 'active'];
 
     public function users()
     {

@@ -11,7 +11,7 @@
                 <a href="/admin">Herramientas Administrativas</a>
                 <i class="uc-icon">keyboard_arrow_right</i>
             </li>
-            <li class="uc-breadcrumb_item current bc-siga">Estados</li>
+            <li class="uc-breadcrumb_item current bc-siga">Roles</li>
         </ol>
 
         <div class="d-flex align-items-center">
@@ -22,7 +22,7 @@
 
         <div class="mt-2 bg-white p-2 border border-gray rounded-1">
             <div class="p-2 p-size--lg">
-                Esta sección permite administrar la información base de los estados de tickets y sistemas, facilitando un
+                Esta sección permite administrar la información de estado de los ticket del sistema, facilitando un
                 registro
                 claro y organizado.
             </div>
@@ -50,19 +50,25 @@
                     </div>
                     <div class="uc-form-group">
                         <label for="first_name">Nombre Estado <span class="text-danger">*</span></label>
-                        <input id="name" name="name" type="text" class="uc-input-style" placeholder="Ingrese nombre rol"
-                            required value="{{ $status->status }}"/>
+                        <input id="name" name="name" type="text" class="uc-input-style" placeholder="Ingrese nombre estado"
+                            required value="{{ $status->status }}" />
                     </div>
+                    <div class="uc-form-group">
+                        <label for="first_name">Global Key <span class="text-danger">*</span></label>
+                        <input id="global_key" name="global_key" type="text" class="uc-input-style"
+                            placeholder="Ingrese global key" required value="{{ $status->global_key }}" />
+                    </div>
+
                     <div class="uc-form-group">
                         <div>
                             <label for="active">Estado Activo <span class="text-danger">*</span></label>
                         </div>
                         <div>
-                            <input type="radio" name="active" value="1" @if ($status->active) checked @endif/>
+                            <input type="radio" name="active" value="1" @if ($status->active) checked @endif />
                             <label class="fw-normal">Si</label>
                         </div>
                         <div>
-                            <input type="radio" name="active" value="0" @if (!$status->active) checked @endif/>
+                            <input type="radio" name="active" value="0" @if (!$status->active) checked @endif />
                             <label class="fw-normal">No</label>
                         </div>
                     </div>
