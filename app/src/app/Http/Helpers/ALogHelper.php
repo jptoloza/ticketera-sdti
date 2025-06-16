@@ -5,7 +5,7 @@ namespace App\Http\Helpers;
 use App\Models\Log;
 use Illuminate\Support\Facades\Session;
 
-class LogHelper
+class ALogHelper
 {
   /**
    * 

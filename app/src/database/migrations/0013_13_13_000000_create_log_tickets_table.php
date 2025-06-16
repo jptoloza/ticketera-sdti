@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void 
     {
-        Schema::create('logs_tickets', function (Blueprint $table) {
+        Schema::create('log_tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Ticket::class)->constrained()->cascadeOnDelete();
             $table->json('data')->nullable();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('logs_tickets');
+        Schema::dropIfExists('log_tickets');
     }
 };

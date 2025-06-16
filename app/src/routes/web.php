@@ -32,7 +32,10 @@ Route::middleware([AuthTicket::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
+
     // Tickets
+
+
     Route::get('/tickets/add', [TicketsController::class, 'create'])
         ->name('tickets_addForm');
 
@@ -45,12 +48,31 @@ Route::middleware([AuthTicket::class])->group(function () {
     Route::get('/tickets/agentsQueue', [TicketsController::class, 'agentQueue'])
         ->name('tickets_agentsQueue');
 
+    Route::get('/tickets/addUserFOrm', [TicketsController::class, 'addUserForm'])
+        ->name('tickets_newUser_form');
 
     Route::post('/tickets/addUser', [TicketsController::class, 'addUser'])
         ->name('tickets_newUser');
 
+    Route::post('/tickets/addFile', [TicketsController::class, 'uploadFile'])
+        ->name('tickets_addFile');
+
+    Route::get('/tickets/download/{type}/{id}/{file}', [TicketsController::class, 'downloadFile'])
+        ->name('tickets_downloadFile')->where(['type' => '[1-2]']);
 
 
+    Route::Post('/tickets/addMessage', [TicketsController::class, 'addMessage'])
+        ->name('tickets_addMessage');
+
+
+    Route::Post('/tickets/update', [TicketsController::class, 'update'])
+        ->name('tickets_update');
+
+    Route::get('/tickets/{id}', [TicketsController::class, 'view'])
+        ->name('tickets_view');
+
+    Route::get('/tickets', [TicketsController::class, 'index'])
+        ->name('tickets');
 
 
 

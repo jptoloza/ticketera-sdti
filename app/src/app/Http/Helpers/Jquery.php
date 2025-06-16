@@ -67,6 +67,65 @@ EOD;
   }
 
 
+
+  /**
+   * 
+   */
+  public static function ajaxPostError($form, $div, $page)
+  {
+    $code = <<<EOD
+<script type="text/javascript">
+  $().ready(function(){
+    $('#$form').submit(function(e){
+      e.preventDefault();
+      var response;
+      var msg;
+      var url;
+      $.ajax({
+        type    : 'POST',
+        url     : $(this).attr('action'),
+        data    : $(this).serialize(),
+        timeout : 1200000,
+        beforeSend: function(){
+            start();
+        },
+        error   : function(response){   
+          console.log(response); 
+          const message = response.responseJSON.message || response.statusText;
+          $('#$div-message').html(message);
+          $('#$div').show('slow');
+        },
+        success : function(response){
+          console.log(response); 
+          var response = response;
+          try{
+            if (response.success=='ok'){
+                url = `$page`;
+              if (response.url){
+                url = response.url
+              }
+              window.location.href = url;
+            } else {
+              throw new Error();
+            }
+          } catch(e){
+            $('#$div-message').html(e);
+            $('#$div').show('slow');      
+          }
+        },
+        complete: function(){
+          stop();
+        }
+      });
+      return false;
+    });
+  });
+</script>
+EOD;
+    return $code;
+
+  }
+
   /**
    * 
    */

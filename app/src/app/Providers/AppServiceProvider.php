@@ -29,9 +29,11 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layout.menu', function ($view) {
             $queues = [];
             $dataQueue = [];
+            $myAsignedTickets = 0;
+            $myTickets = 0;
+
             $userSession = SessionHelper::current();
             $role_agent = UtilHelper::globalKey('ROLE_AGENT');
-            $status_open = UtilHelper::globalKey('STATUS_OPEN');
             if ($userSession->id && in_array($role_agent, $userSession->roles)) {
                 $queues = Queue::whereHas('users', function ($q) use ($userSession) {
                     $q->where('user_id', $userSession->id);
@@ -39,12 +41,27 @@ class AppServiceProvider extends ServiceProvider
                 $status_open = UtilHelper::globalKey('STATUS_OPEN');
                 foreach ($queues as $queue) {
                     $dataQueue[$queue->id] = Ticket::where('queue_id', $queue->id)
-                        ->where('status_id', $status_open)->count();
+                        ->where('status_id', UtilHelper::globalKey('STATUS_OPEN'))->count();
                 }
+                $myAsignedTickets = Ticket::where('assigned_agent', $userSession->id)
+                    ->where('status_id', UtilHelper::globalKey('STATUS_CLOSED'))
+                    ->where('status_id', UtilHelper::globalKey('STATUS_CANCELLED'))
+                    ->count();
             }
+
+            
+            $myTickets = Ticket::where('user_id',$userSession->id)
+                            ->where('status_id','!=', UtilHelper::globalKey('STATUS_CLOSED'))
+                            ->where('status_id','!=', UtilHelper::globalKey('STATUS_CANCELLED'))
+                            ->count();
+
+
+
             $view->with([
-                'userQueues'    => $queues,
-                'dataQueue'     => $dataQueue
+                'userQueues'        => $queues,
+                'dataQueue'         => $dataQueue,
+                'myTickets'         => $myTickets,
+                'myAsignedTickets'  => $myAsignedTickets
             ]);
         });
     }

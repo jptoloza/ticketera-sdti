@@ -19,6 +19,9 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
+
+        return redirect()->route('tickets');
+
         $userSession = SessionHelper::current();
         $queues = Queue::whereHas('users', function ($q) use ($userSession) {
             $q->where('user_id', $userSession->id);

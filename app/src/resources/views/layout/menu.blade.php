@@ -22,50 +22,56 @@
       </a>
       <ul class="uc-navbar-side">
         <li>
-          <a href="#">
-            Mis tickets (0)
+          <a href="{{route('tickets')}}">
+            Mis tickets ({{ $myTickets }})
             <i class="uc-icon">keyboard_arrow_right</i>
           </a>
         </li>
-        <li>
-          <a href="#">
-            Mis tickets asignados (0)
-            <i class="uc-icon">keyboard_arrow_right</i>
-          </a>
-        </li>
+
+        @if (in_array(App\Http\Helpers\UtilHelper::globalKey('ROLE_AGENT'), Session::all()['roles']))
+      <li>
+        <a href="#">
+        Mis tickets asignados ({{ $myAsignedTickets }})
+        <i class="uc-icon">keyboard_arrow_right</i>
+        </a>
+      </li>
+    @endif
       </ul>
     </li>
 
+    @if (in_array(App\Http\Helpers\UtilHelper::globalKey('ROLE_AGENT'), Session::all()['roles']))
+
     <li>
       <a href="#" class="uc-navbar-side_label active">
-        <span class="h5"><i class="uc-icon me-2">topic</i>Colas</span>
+      <span class="h5"><i class="uc-icon me-2">topic</i>Colas</span>
       </a>
       <ul class="uc-navbar-side">
-        @forelse ($userQueues as $queue)
-          <li>
-            <a href="#" class="uc-navbar-side_label">{{ $queue->queue }} <i class="uc-icon">keyboard_arrow_right</i></a>
-            <ul class="uc-navbar-side">
-              <li>
-                <a href="{{ route('agent_queues', $queue->id) }}">
-                  Tickets no asignados ({{ $dataQueue[$queue->id] }})
-                  <i class="uc-icon">keyboard_arrow_right</i>
-                </a>
-              </li>
-              <li>
-                <a href="{{ route('agent_queues', $queue->id) }}">
-                  Todos los tickets
-                  <i class="uc-icon">keyboard_arrow_right</i>
-                </a>
-              </li>
-            </ul>
-          </li>
-        @empty
-          <li>
-            <span class="uc-navbar-side_label text-muted">Sin colas asignadas</span>
-          </li>
-        @endforelse
+      @forelse ($userQueues as $queue)
+      <li>
+      <a href="#" class="uc-navbar-side_label">{{ $queue->queue }} <i class="uc-icon">keyboard_arrow_right</i></a>
+      <ul class="uc-navbar-side">
+      <li>
+        <a href="{{ route('agent_queues', $queue->id) }}">
+        Tickets no asignados ({{ $dataQueue[$queue->id] }})
+        <i class="uc-icon">keyboard_arrow_right</i>
+        </a>
+      </li>
+      <li>
+        <a href="{{ route('agent_queues', $queue->id) }}">
+        Todos los tickets
+        <i class="uc-icon">keyboard_arrow_right</i>
+        </a>
+      </li>
+      </ul>
+      </li>
+    @empty
+      <li>
+      <span class="uc-navbar-side_label text-muted">Sin colas asignadas</span>
+      </li>
+    @endforelse
       </ul>
     </li>
+  @endif
 
   </ul>
 </div>

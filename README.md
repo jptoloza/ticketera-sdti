@@ -1,5 +1,13 @@
 # ticketera-sdti
 
+## lo que falta:
+terminar los mensajes
+terminar el cambio de estado
+terminar la navegación por las colas
+colocar el envio de correo
+completar las tablas del admin
+
+
 
 
 

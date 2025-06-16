@@ -22,9 +22,11 @@ jQuery.ajaxSetup({ cache: !1 });
 
 $().ready(function () {
     $(".uc-alert_close").click(function () {
+        console.log('click');
         id = $(this).attr("data-id");
         $("#" + id).hide("slow");
     });
+
     $('.select2').select2({
         width: '100%'
     });
