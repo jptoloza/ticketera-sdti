@@ -13,7 +13,7 @@
   <div class="row mt-32 container-fluid">
     <div class="col-12">
       <div class="d-flex align-items-center mb-3">
-        <h1>Mis Tickets</h1>
+        <h1>Tickets Sin Asignacion</h1>
         <span class="uc-heading-decoration"></span>
       </div>
 

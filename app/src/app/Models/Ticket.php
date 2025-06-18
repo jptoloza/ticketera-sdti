@@ -24,6 +24,11 @@ class Ticket extends Model
     {
         return $this->belongsTo(Priority::class);
     }
+    
+    public function user() 
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function queue()
     {

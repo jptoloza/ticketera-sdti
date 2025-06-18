@@ -30,7 +30,7 @@
 
         @if (in_array(App\Http\Helpers\UtilHelper::globalKey('ROLE_AGENT'), Session::all()['roles']))
       <li>
-        <a href="#">
+        <a href="{{ route('tickets.assigned') }}">
         Mis tickets asignados ({{ $myAsignedTickets }})
         <i class="uc-icon">keyboard_arrow_right</i>
         </a>
@@ -51,13 +51,13 @@
       <a href="#" class="uc-navbar-side_label">{{ $queue->queue }} <i class="uc-icon">keyboard_arrow_right</i></a>
       <ul class="uc-navbar-side">
       <li>
-        <a href="{{ route('agent_queues', $queue->id) }}">
+        <a href="{{ route('tickets.noAssigned.queue', $queue->id) }}">
         Tickets no asignados ({{ $dataQueue[$queue->id] }})
         <i class="uc-icon">keyboard_arrow_right</i>
         </a>
       </li>
       <li>
-        <a href="{{ route('agent_queues', $queue->id) }}">
+        <a href="{{ route('tickets.byQueue', $queue->id) }}">
         Todos los tickets
         <i class="uc-icon">keyboard_arrow_right</i>
         </a>

@@ -41,11 +41,15 @@ class AppServiceProvider extends ServiceProvider
                 $status_open = UtilHelper::globalKey('STATUS_OPEN');
                 foreach ($queues as $queue) {
                     $dataQueue[$queue->id] = Ticket::where('queue_id', $queue->id)
-                        ->where('status_id', UtilHelper::globalKey('STATUS_OPEN'))->count();
+                        ->whereNull('assigned_agent')
+                        ->where('status_id', UtilHelper::globalKey('STATUS_OPEN'))
+                        ->count();
                 }
                 $myAsignedTickets = Ticket::where('assigned_agent', $userSession->id)
-                    ->where('status_id', UtilHelper::globalKey('STATUS_CLOSED'))
-                    ->where('status_id', UtilHelper::globalKey('STATUS_CANCELLED'))
+                    ->whereNotIn('status_id', [
+                        UtilHelper::globalKey('STATUS_CLOSED'),
+                        UtilHelper::globalKey('STATUS_CANCELLED'),
+                    ])
                     ->count();
             }
 

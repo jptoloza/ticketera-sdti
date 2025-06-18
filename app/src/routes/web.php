@@ -60,10 +60,17 @@ Route::middleware([AuthTicket::class])->group(function () {
     Route::get('/tickets/download/{type}/{id}/{file}', [TicketsController::class, 'downloadFile'])
         ->name('tickets_downloadFile')->where(['type' => '[1-2]']);
 
-
     Route::Post('/tickets/addMessage', [TicketsController::class, 'addMessage'])
         ->name('tickets_addMessage');
 
+    Route::get('/tickets/no-assigned/{queueId}', [TicketsController::class, 'indexNoAssignedByQueue'])
+        ->name('tickets.noAssigned.queue');
+
+    Route::get('/tickets/assigned', [TicketsController::class, 'indexAssigned'])
+        ->name('tickets.assigned');
+    
+    Route::get('/tickets/queue/{queueId}', [TicketsController::class, 'indexByQueue'])
+        ->name('tickets.byQueue');
 
     Route::Post('/tickets/update', [TicketsController::class, 'update'])
         ->name('tickets_update');
@@ -211,7 +218,7 @@ Route::middleware([AuthTicket::class])->group(function () {
 
     //
     Route::get('/agent/request/{id}', [AgentRequestController::class, 'show'])
-        ->name('agent_reqest_id');
+        ->name('agent_reqest');
     Route::get('/agent/request', [AgentRequestController::class, 'index'])
         ->name('agent_request');
 });

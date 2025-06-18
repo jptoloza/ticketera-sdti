@@ -147,4 +147,18 @@ class UtilHelper
 
     }
 
+    public static function statusBadgeClass(string $status): string
+    {
+        return match (strtoupper($status)) {
+            'ABIERTO'      => 'bg-primary text-white',
+            'ASIGNADO'     => 'bg-warning text-dark',
+            'REASIGNADO'   => 'bg-warning text-dark',
+            'EN EJECUCIÓN' => 'bg-success text-white',
+            'ESCALADO'     => 'bg-orange text-white',
+            'CERRADO'      => 'bg-danger text-white',
+            'CANCELADO'    => 'bg-secondary text-white',
+            default        => 'bg-light text-dark',
+        };
+    }
+
 }

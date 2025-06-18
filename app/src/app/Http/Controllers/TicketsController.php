@@ -41,8 +41,85 @@ class TicketsController extends Controller
             ->orderByDesc('id')
             ->select('tickets.id', 'tickets.subject', 'tickets.created_at', 'tickets.updated_at', 'status.status', 'queues.queue', 'users.name', 'users.email')
             ->get();
+
         return view('tickets.index', [
             'title' => 'Tickets',
+            'tickets' => $tickets,
+
+        ]);
+    }
+
+    public function indexNoAssignedByQueue($queueId)
+    {
+        // Obtener el usuario autenticado (puedes usar tu helper si prefieres)
+        $user = User::find(session('id'));
+        
+        $hasAccess = $user->queues->contains('id', $queueId);
+        if (!$hasAccess) {
+            abort(403, 'No tienes acceso a esta cola.');
+        }
+
+        // // Obtener los IDs de las colas asignadas al agente
+        // $queueIds = $user->queues->pluck('id');
+
+        // Obtener los tickets no asignados que pertenezcan a esas colas
+        $tickets = Ticket::whereNull('assigned_agent')
+            ->where('queue_id', $queueId)
+            ->join('status', 'status.id', '=', 'tickets.status_id')
+            ->join('priorities', 'priorities.id', '=', 'tickets.priority_id')
+            ->join('users', 'users.id', '=', 'tickets.user_id')
+            ->join('queues', 'queues.id', '=', 'tickets.queue_id')
+            ->orderByDesc('tickets.id')
+            ->select('tickets.id', 'tickets.subject', 'tickets.created_at', 'tickets.updated_at', 'status.status', 'queues.queue', 'users.name', 'users.email')
+            ->get();
+
+        return view('tickets.indexUnassigned', [
+            'title' => 'Tickets no asignados',
+            'tickets' => $tickets,
+        ]);
+    }
+
+    public function indexAssigned()
+    {
+        $userId = session('id');
+
+        $tickets = Ticket::where('assigned_agent', $userId)
+            ->join('status', 'status.id', '=', 'tickets.status_id')
+            ->join('priorities', 'priorities.id', '=', 'tickets.priority_id')
+            ->join('users', 'users.id', '=', 'tickets.user_id')
+            ->join('queues', 'queues.id', '=', 'tickets.queue_id')
+            ->orderByDesc('tickets.id')
+            ->select(
+                'tickets.id', 'tickets.subject', 'tickets.created_at', 'tickets.updated_at', 'status.status', 'queues.queue', 'users.name', 'users.email')
+            ->get();
+
+
+        return view('tickets.indexAssigned', [
+            'title' => 'Mis tickets asignados',
+            'tickets' => $tickets,
+        ]);
+    }
+
+    public function indexByQueue($queueId)
+    {
+        $userId = session('id');
+
+        $user = User::find($userId);
+        if (!$user->queues->contains('id', $queueId)) {
+            abort(403, 'No tienes acceso a esta cola.');
+        }
+
+        $tickets = Ticket::where('queue_id', $queueId)
+            ->join('status', 'status.id', '=', 'tickets.status_id')
+            ->join('priorities', 'priorities.id', '=', 'tickets.priority_id')
+            ->join('users', 'users.id', '=', 'tickets.user_id')
+            ->join('queues', 'queues.id', '=', 'tickets.queue_id')
+            ->orderByDesc('tickets.id')
+            ->select('tickets.id', 'tickets.subject', 'tickets.created_at', 'tickets.updated_at', 'status.status', 'queues.queue', 'users.name', 'users.email')
+            ->get();
+
+        return view('tickets.indexByQueue', [
+            'title' => 'Tickets de la cola',
             'tickets' => $tickets,
         ]);
     }
