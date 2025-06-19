@@ -21,13 +21,35 @@
         <span class="uc-heading-decoration"></span>
       </div>
 
-
+      @php
+        $date = null;
+        $status_color = '';
+        $status_bg = '';
+        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_at);
+        switch ($ticket->global_key):
+            case 'STATUS_OPEN':
+                $status_color = 'bg-uc-feedback-blue';
+                $status_bg = 'text-white';
+                break;
+            case 'STATUS_CLOSED':
+                $status_color = 'bg-uc-feedback-green';
+                $status_bg = 'text-white';
+                break;
+            case 'STATUS_CANCELLED':
+                $status_color = 'bg-uc-feedback-red';
+                $status_bg = 'text-white';
+                break;
+            default:
+                $status_color = 'bg-uc-feedback-yellow';
+                $status_bg = 'text-white';
+                break;
+        endswitch;
+      @endphp
 
       <div class="d-flex justify-content-between align-items-center mb-3">
-        @php
-          $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_at);
-        @endphp
-        <h4>Ticket creado por {{ $createdBy->name }} ({{ $date->format('Y-m-d H:i') }})</h4>
+        <h4>Ticket creado por {{ $createdBy->name }} ({{ $date->format('Y-m-d H:i') }}) <span
+            class="badge {{ $status_color }} {{ $status_bg }} text-white text-uppercase">{{ $ticket->status }}</span>
+        </h4>
         <a href="javascript:void(0)" id="btnShowDetails" data-bs-toggle="collapse" data-bs-target="#collapseData">Ocultar
           Detalles</a>
       </div>
@@ -153,10 +175,6 @@
 
 
 
-
-
-            <hr class="uc-hr" />
-
             <form name="actionFormNM" id="actionFormNM" method="POST" action="{{ route('tickets_addMessage') }}">
               @csrf
               <input type="hidden" name="ticket_id" value="{{ $ticket->id }}" />
@@ -167,8 +185,7 @@
                   <textarea id="message" name="message" class="uc-input-style" placeholder="Ingrese mensaje"
                     style="min-height:200px" required></textarea>
                   <div>
-                    <ul id="file_list"></ul>
-
+                    <ul id="file_list" style="list-style-type: none;padding-left: 0;"></ul>
                   </div>
                   <p class="p-color--gray mb-16">
                     <a href="#" id="btnAddFile">
@@ -220,10 +237,10 @@
 
 
             @if (in_array(App\Http\Helpers\UtilHelper::globalKey('ROLE_AGENT'), Session::all()['roles']))
-              <form name="actionForm" id="actionForm" method="POST" action="{{ route('tickets_update') }}">
+              <form class="bg--gray p-4" name="actionForm" id="actionForm" method="POST"
+                action="{{ route('tickets_update') }}">
                 @csrf
-                <input type="hidden" name="id" value="{{$ticket->id}}"/>
-                <hr class="uc-hr" />
+                <input type="hidden" name="id" value="{{ $ticket->id }}" />
                 <div class="row mt-3">
                   <div class="col-12 col-lg-6">
                     <div class="uc-form-group mb-3">
@@ -244,7 +261,7 @@
                         <option value="" selected="">Seleccionar</option>
                         @foreach ($status as $state)
                           <option value="{{ $state->id }}"
-                             @if ($state->id == $ticket->status_id) selected="selected" @endif>
+                            @if ($state->id == $ticket->status_id) selected="selected" @endif>
                             {{ App\Http\Helpers\UtilHelper::ucTexto($state->status) }}
                           </option>
                         @endforeach
@@ -266,8 +283,6 @@
                     </div>
                   </div>
 
-
-
                   <div id="error-flash-update" style="display:none">
                     <div class="uc-alert error mb-12" style="display:block">
                       <div class="flex d-flex justify-content-between">
@@ -287,8 +302,7 @@
                     </div>
                   </div>
 
-
-                  <div class="uc-form-group mt-3 mb-5">
+                  <div class="uc-form-group mt-3">
                     <button type="submit" class="uc-btn btn-secondary text-uppercase">
                       Actualizar
                       <i class="uc-icon icon-shape--rounded ms-4">arrow_forward</i>
@@ -323,35 +337,44 @@
                   @endforeach
                 </tbody>
               </table>
-
             </div>
-
-
           </div>
         </div>
       </div>
-
-
-
-
-
-
-
-
-
     </div>
-
   </div>
 
 
-  <hr class="uc-hr" />
-
-
-
-
-
-
   <script>
+    function modalError(message) {
+      var modal = `<div id="messageError" class="modal">
+      <div class="modal-dialog">
+      <div class="modal-content">
+      <div class="uc-message error siga-message">
+      <a href="#" class="uc-message_close-button" data-bs-dismiss="modal"><i class="uc-icon">close</i></a>
+      <div class="uc-message_body">
+      <h2 class="mb-24">
+      <i class="uc-icon warning-icon">error</i> Error
+      </h2>
+      <p class="no-margin">
+      ${message}
+      </p>
+      </div>
+      </div>
+      <div class="modal-footer modal-footer-confirm">
+      <button type="button" class="uc-btn btn-cta btn-cancel" data-bs-dismiss="modal">Continuar</button>
+      </div>
+      </div>
+      </div>
+      </div>
+      `;
+
+      $('body').append(modal);
+      $('#messageError').modal('show');
+      $('#messageError').on('hidden.bs.modal', function(event) {
+        $('#messageError').remove();
+      });
+    }
     $().ready(function() {
       $('#collapseData').on('shown.bs.collapse', function() {
         $('#btnShowDetails').text('Ocultar Detalles');
@@ -359,17 +382,20 @@
         $('#btnShowDetails').text('Mostrar detalles');
       });
 
-
-
       const TS_AJAX_FORM = {
         beforeSubmitHandler: function(arr, form, options) {
-          var isValid = true;
-          $.each(arr, function(index, aField) {
-            if (aField.name === 'uploadFile' && aField.value === "") {
-              modalError('Seleccione Archivo');
-              isValid = false;
-            }
-          });
+          let isValid = true;
+          const maxSize = {{ App\Http\Helpers\UtilHelper::convertToBytes(ini_get('upload_max_filesize')) }};
+          const fileInput = document.getElementById('uploadFile');
+          const file = fileInput.files[0];
+          if (file.name === "") {
+            modalError('Seleccione Archivo');
+            isValid = false;
+          }
+          if (file.size > maxSize) {
+            modalError('El archivo no puede superar los {{ ini_get('upload_max_filesize') }}.');
+            isValid = false;
+          }
           if (isValid) start();
           return isValid;
         },
@@ -381,13 +407,13 @@
                 files = [];
               } else {
                 files = JSON.parse(files);
-                i = files.length;
               }
               files.push(response.data);
               $('#files').val(JSON.stringify(files));
               $('#file_list').empty();
               files.forEach(element => {
-                let li = `<li>${element.name}</li>`;
+                let li =
+                  `<li><a href="#" class="btnDelete" data-id="${element.fileName}"><i class="uc-icon" style="margin: 0px !important">delete</i></a> ${element.name}</li>`;
                 $('#file_list').append(li);
               });
             } else {
@@ -422,17 +448,36 @@
         $('#uploadFile').click();
       });
 
+
+
       TS_AJAX_FORM.initMyAjaxForm();
       $('#uploadFile').change(function() {
         $('#addFileForm').submit();
       });
+    });
 
 
-
+    $(document).on('click', '.btnDelete', function(e) {
+      e.preventDefault();
+      const id = $(this).attr('data-id');
+      let files = $('#files').val();
+      if (files.length == 0) {
+        files = [];
+      } else {
+        files = JSON.parse(files);
+      }
+      newFiles = files.filter(e => e.fileName != id);
+      $('#files').val(JSON.stringify(newFiles));
+      $('#file_list').empty();
+      newFiles.forEach(element => {
+        let li =
+          `<li><a href="#" class="btnDelete" data-id="${element.fileName}"><i class="uc-icon" style="margin: 0px !important">delete</i></a> ${element.name}</li>`;
+        $('#file_list').append(li);
+      });
     });
   </script>
 
   {!! App\Http\Helpers\Jquery::ajaxPost('actionFormNM', '/tickets/' . $ticket->id) !!}
-  {!! App\Http\Helpers\Jquery::ajaxPostError('actionForm','error-flash-update', '/tickets/' . $ticket->id) !!}
+  {!! App\Http\Helpers\Jquery::ajaxPostError('actionForm', 'error-flash-update', '/tickets/' . $ticket->id) !!}
 
 @endsection

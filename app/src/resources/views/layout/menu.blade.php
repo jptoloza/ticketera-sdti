@@ -43,12 +43,12 @@
 
     <li>
       <a href="#" class="uc-navbar-side_label active">
-      <span class="h5"><i class="uc-icon me-2">topic</i>Colas</span>
+      <span class="h5"><i class="uc-icon me-2">topic</i> Equipos</span>
       </a>
       <ul class="uc-navbar-side">
       @forelse ($userQueues as $queue)
       <li>
-      <a href="#" class="uc-navbar-side_label">{{ $queue->queue }} <i class="uc-icon">keyboard_arrow_right</i></a>
+      <span class="uc-navbar-side_label">{{ $queue->queue }} <i class="uc-icon">keyboard_arrow_right</i></span>
       <ul class="uc-navbar-side">
       <li>
         <a href="{{ route('tickets.noAssigned.queue', $queue->id) }}">

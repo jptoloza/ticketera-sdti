@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Session;
 
 class UtilHelper
 {
-    
-    
+
+
     /**
      * 
      * 
@@ -138,13 +138,12 @@ class UtilHelper
     {
         if (is_null($key)) return null;
 
-        $modelArray = explode("_",$key);
+        $modelArray = explode("_", $key);
         $modelName = mb_convert_case($modelArray[0], MB_CASE_TITLE);
 
         $modelInstance = app('App\\Models\\' . $modelName);
-        $record = $modelInstance::where('global_key', '=', $key)->where('active',true)->first();
+        $record = $modelInstance::where('global_key', '=', $key)->where('active', true)->first();
         return is_null($record) ? null : $record->id;
-
     }
 
     public static function statusBadgeClass(string $status): string
@@ -161,4 +160,22 @@ class UtilHelper
         };
     }
 
+    /**
+     * 
+     */
+    public static function convertToBytes($value)
+    {
+        $unit = strtoupper(substr($value, -1));
+        $number = (float) substr($value, 0, -1);
+        switch ($unit) {
+            case 'G':
+                return $number * 1024 * 1024 * 1024;
+            case 'M':
+                return $number * 1024 * 1024;
+            case 'K':
+                return $number * 1024;
+            default:
+                return $number; // Bytes
+        }
+    }
 }

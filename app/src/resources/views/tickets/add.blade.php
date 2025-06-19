@@ -82,7 +82,7 @@
               <textarea id="message" name="message" class="uc-input-style" placeholder="Ingrese descripción"
                 style="min-height:200px" required></textarea>
               <div>
-                <ul id="file_list"></ul>
+                <ul id="file_list" style="list-style-type: none;padding-left: 0;"></ul>
 
               </div>
               <p class="p-color--gray mb-16">
@@ -206,26 +206,26 @@
   <script>
     function modalError(message) {
       var modal = `<div id="messageError" class="modal">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                  <div class="uc-message error siga-message">
-                    <a href="#" class="uc-message_close-button" data-bs-dismiss="modal"><i class="uc-icon">close</i></a>
-                    <div class="uc-message_body">
-                    <h2 class="mb-24">
-                      <i class="uc-icon warning-icon">error</i> Error
-                    </h2>
-                    <p class="no-margin">
-                      ${message}
-                    </p>
-                    </div>
-                  </div>
-                  <div class="modal-footer modal-footer-confirm">
-                    <button type="button" class="uc-btn btn-cta btn-cancel" data-bs-dismiss="modal">Continuar</button>
-                  </div>
-                  </div>
-                </div>
-                </div>
-              `;
+      <div class="modal-dialog">
+      <div class="modal-content">
+      <div class="uc-message error siga-message">
+      <a href="#" class="uc-message_close-button" data-bs-dismiss="modal"><i class="uc-icon">close</i></a>
+      <div class="uc-message_body">
+      <h2 class="mb-24">
+        <i class="uc-icon warning-icon">error</i> Error
+      </h2>
+      <p class="no-margin">
+        ${message}
+      </p>
+      </div>
+      </div>
+      <div class="modal-footer modal-footer-confirm">
+      <button type="button" class="uc-btn btn-cta btn-cancel" data-bs-dismiss="modal">Continuar</button>
+      </div>
+      </div>
+      </div>
+      </div>
+      `;
 
       $('body').append(modal);
       $('#messageError').modal('show');
@@ -236,13 +236,18 @@
 
     const TS_AJAX_FORM = {
       beforeSubmitHandler: function(arr, form, options) {
-        var isValid = true;
-        $.each(arr, function(index, aField) {
-          if (aField.name === 'uploadFile' && aField.value === "") {
-            modalError('Seleccione Archivo');
-            isValid = false;
-          }
-        });
+        let isValid = true;
+        const maxSize = {{ App\Http\Helpers\UtilHelper::convertToBytes(ini_get('upload_max_filesize')) }};
+        const fileInput = document.getElementById('uploadFile');
+        const file = fileInput.files[0];
+        if (file.name === "") {
+          modalError('Seleccione Archivo');
+          isValid = false;
+        }
+        if (file.size > maxSize) {
+          modalError('El archivo no puede superar los {{ ini_get('upload_max_filesize') }}.');
+          isValid = false;
+        }
         if (isValid) start();
         return isValid;
       },
@@ -259,8 +264,8 @@
             files.push(response.data);
             $('#files').val(JSON.stringify(files));
             $('#file_list').empty();
-            files.forEach(element => {
-              let li = `<li>${element.name}</li>`;
+            files.forEach(element => {              
+              let li = `<li><a href="#" class="btnDelete" data-id="${element.fileName}"><i class="uc-icon" style="margin: 0px !important">delete</i></a> ${element.name}</li>`;
               $('#file_list').append(li);
             });
           } else {
@@ -357,6 +362,25 @@
         });
       @endif
 
+    });
+
+    $(document).on('click', '.btnDelete', function(e) {
+      e.preventDefault();
+      const id = $(this).attr('data-id');
+      let files = $('#files').val();
+      if (files.length == 0) {
+        files = [];
+      } else {
+        files = JSON.parse(files);
+      }
+      newFiles = files.filter(e => e.fileName != id);
+      $('#files').val(JSON.stringify(newFiles));
+      $('#file_list').empty();
+      newFiles.forEach(element => {
+        let li =
+          `<li><a href="#" class="btnDelete" data-id="${element.fileName}"><i class="uc-icon" style="margin: 0px !important">delete</i></a> ${element.name}</li>`;
+        $('#file_list').append(li);
+      });
     });
   </script>
 
