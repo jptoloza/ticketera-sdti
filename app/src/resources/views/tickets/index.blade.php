@@ -19,11 +19,11 @@
 
 
       <div class="table-responsive">
-        <table class="table table-hover" id="data" style="width:100% !important">
+        <table class="table table-striped uc-datatable" id="data" style="width:100% !important">
           <thead class="bg-uc-blue-1">
             <tr>
-              <th>ID</th>
-              <th>Cola</th>
+              <th>#ID</th>
+              <th>Equipo</th>
               <th>Estado</th>
               <th>Solicitante</th>
               <th>Asunto</th>
@@ -34,15 +34,38 @@
           <tbody>
 
             @foreach ($tickets as $ticket)
-              <tr data-id="{{ route('tickets_view',['id' => $ticket->id]) }}">
-                <td class="align-top" style="width: 80px">{{ $ticket->id }}</td>
-                <td class="align-top">{{ $ticket->queue }}</td>
-                <td class="align-top"><span class="badge bg-info text-dark text-uppercase">{{ $ticket->status }}</span>
-                </td>
-                <td class="align-top">{{ $ticket->name }} ({{ $ticket->email }})</td>
-                <td class="align-top">{{ $ticket->subject }}</td>
-                <td class="align-top" style="width: 100px">{{ $ticket->created_at }}</td>
-                <td class="align-top" style="width: 100px">{{ $ticket->updated_at }}</td>
+              <tr data-id="{{ route('tickets_view', ['id' => $ticket->id]) }}">
+                <td>{{ $ticket->id }}</td>
+                <td>{{ $ticket->queue }}</td>
+                @php
+                  $status_color = '';
+                  $status_bg = '';
+
+                  switch($ticket->global_key):
+                    case 'STATUS_OPEN':
+                      $status_color = 'bg-uc-feedback-blue';
+                      $status_bg = 'text-white';
+                      
+                    break;
+                    case 'STATUS_CLOSED':
+                      $status_color = 'bg-uc-feedback-green';
+                      $status_bg = 'text-white';
+                    break;
+                    case 'STATUS_CANCELLED':
+                      $status_color = 'bg-uc-feedback-red';
+                      $status_bg = 'text-white';
+                    break;
+                    default:
+                      $status_color = 'bg-uc-feedback-yellow';
+                      $status_bg = 'text-white';
+                    break;
+                endswitch;
+                @endphp
+                <td><span class="badge {{ $status_color }} {{ $status_bg }} text-white text-uppercase">{{ $ticket->status }}</span></td>
+                <td>{{ App\Http\Helpers\UtilHelper::ucTexto($ticket->name) }} ({{ $ticket->email }})</td>
+                <td>{{ $ticket->subject }}</td>
+                <td>{{ $ticket->created_at }}</td>
+                <td>{{ $ticket->updated_at }}</td>
               </tr>
             @endforeach
 
@@ -85,7 +108,7 @@
         scrollX: true,
         ordering: false,
         columns: [{
-            className: 'align-top dt-col-80px'
+            className: 'text-left align-top dt-col-50px'
           },
           {
             className: 'align-top dt-col-100px'
@@ -105,7 +128,11 @@
           {
             className: 'align-top dt-col-80px'
           },
-        ]
+        ],
+        createdRow: function(row, data, dataIndex) {
+          //row.cells[0].classList.add('text-right');
+          //console.log(row.cells[0].classList);
+        }
       });
 
       $('#data tbody').on('click', 'tr', function() {

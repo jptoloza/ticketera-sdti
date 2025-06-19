@@ -39,8 +39,10 @@ class TicketsController extends Controller
             ->join('users', 'users.id', '=', 'tickets.user_id')
             ->join('queues', 'queues.id', '=', 'tickets.queue_id')
             ->orderByDesc('id')
-            ->select('tickets.id', 'tickets.subject', 'tickets.created_at', 'tickets.updated_at', 'status.status', 'queues.queue', 'users.name', 'users.email')
+            ->select('tickets.id', 'tickets.subject', 'tickets.created_at', 'tickets.updated_at', 'status.status', 'status.id as status_id', 'status.global_key', 'queues.queue', 'users.name', 'users.email')
             ->get();
+
+            
         return view('tickets.index', [
             'title' => 'Tickets',
             'tickets' => $tickets,
@@ -56,7 +58,10 @@ class TicketsController extends Controller
     public function view(Request $request, $id = null)
     {
         if (in_array(UtilHelper::globalKey('ROLE_AGENT'), Session::all()['roles']) || in_array(UtilHelper::globalKey('ROLE_ADMIN'), Session::all()['roles'])) {
-            $ticket = Ticket::find($id);
+            $ticket = Ticket::where('tickets.id',$id)
+                ->join('status','tickets.status_id','=','status.id')
+                ->select('tickets.*','status.status','status.global_key')
+                ->first();
         } else {
             $ticket = Ticket::where('user_id', Session::all()['id'])
                 ->where('id', $id)
@@ -97,7 +102,6 @@ class TicketsController extends Controller
      *
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
      */
     public function update(Request $request)
     {
@@ -454,6 +458,20 @@ class TicketsController extends Controller
     public function uploadFile(Request $request)
     {
         try {
+
+
+            $request->validate(
+                [
+                    'file' => 'required|file|max:2048', // 2048 KB = 2 MB
+                ],
+                [
+                    'file.required' => 'Archivo no valido.',
+                    'file.file' => 'Archivo no válido.',
+                    'file.max' => 'Archivo no debe superar los 2 MB.',
+                ]
+            );
+
+
             $pathTmp = storage_path() . '/app/tmp/';
             if (!is_dir($pathTmp)) {
                 if (!mkdir($pathTmp)) {

@@ -17,6 +17,7 @@ table.uc-table_datatable th {
     font-size: 0.875rem;
     line-height: 16px;
     font-weight: bold !important;
+    border: 1px solid #dee2e6;
 }
 
 table.uc-table_datatable td {
