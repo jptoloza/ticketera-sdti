@@ -81,7 +81,6 @@ class QueuesController extends Controller
             $queue->queue    = mb_convert_case($request->input('name'), MB_CASE_UPPER);
             $queue->active   = (int) $request->input('active') == 1 ? true : false;
             $queue->save();
-
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request,  'ADD|OK|QUEUE:' . $queue->id);
             return response()->json([
@@ -150,7 +149,6 @@ class QueuesController extends Controller
             $queue->queue    = mb_convert_case($request->input('name'), MB_CASE_UPPER);
             $queue->active   = (int) $request->input('active') == 1 ? true : false;
             $queue->save();
-
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request,  'UPDATE|OK|QUEUE:' . $queue->id);
             return response()->json([
@@ -177,7 +175,7 @@ class QueuesController extends Controller
         try {
             $queue = Queue::find($id);
             if (!$queue) {
-                throw new Exception('Rol no existe.');
+                throw new Exception('Cola no existe.');
             }
             $queue->delete();
             Session::flash('message', 'Datos eliminados!');
@@ -197,8 +195,6 @@ class QueuesController extends Controller
             ], 400);
         }
     }
-
-
 
     /**
      * 
@@ -225,9 +221,9 @@ class QueuesController extends Controller
             $data[$value->id] = $_data;
         }
         $dataUsers = [];
-
-        $agentRoleId = 2;
-
+        
+        
+        $agentRoleId = UtilHelper::globalKey('ROLE_AGENT');
         $assignedUserIds = QueueUser::where('queue_id', $queue->id)
             ->pluck('user_id')
             ->toArray();
@@ -252,10 +248,6 @@ class QueuesController extends Controller
             'ajaxGet'   => Jquery::ajaxGet('url', route('admin_queues_users', $queue->id))
         ]);
     }
-
-
-
-
 
     /**
      * 

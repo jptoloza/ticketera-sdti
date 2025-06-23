@@ -51,14 +51,22 @@ class LoggerHelper
 
     /**
      * 
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $action
+     * @param mixed $ticket_id
+     * @param mixed $data
+     * @return LogTicket
      */
-    public static function ticket(Request $request, $action,$data)
+    public static function ticket(Request $request, $action,$ticket_id,$data,$created_by)
     {
         $log = LogTicket::create([
-            'ticket_id'     => $data->id,
+            'ticket_id'     => $ticket_id,
             'data'          => json_encode($data->toArray()),
-            'action'        => $action
+            'action'        => $action,
+            'created_by'    => $created_by
         ]);
         return $log;
     }
+
 }

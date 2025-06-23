@@ -25,13 +25,19 @@ class Jquery
         type    : 'POST',
         url     : $(this).attr('action'),
         data    : $(this).serialize(),
+        dataType: 'json',
         timeout : 1200000,
         beforeSend: function(){
             start();
         },
         error   : function(response){   
           console.log(response); 
-          const message = response.responseJSON.message || response.statusText;
+          let message = "Error desconocido";
+          if (response.responseJSON) {
+            message = response.responseJSON.message;
+          } else if (response.statusText) {
+            message = response.statusText;
+          }
           $('#error-flash-message').html(message);
           $('#error-flash').show('slow');
         },
@@ -63,7 +69,6 @@ class Jquery
 </script>
 EOD;
     return $code;
-
   }
 
 
@@ -123,21 +128,28 @@ EOD;
 </script>
 EOD;
     return $code;
-
   }
 
   /**
    * 
    */
-  public static function ajaxPostEditor($form, $page, $editor)
+  public static function ajaxPostEditor($form, $input, $page,)
   {
     $code = <<<EOD
 <script type="text/javascript">
   $().ready(function(){
     $('#$form').submit(function(e){
       e.preventDefault();
-      const editorData = quill.root.innerHTML;
-      $('#$editor').val(editorData);
+      const delta = quill.getContents();
+      let data = '';
+      if (delta.ops.length === 1 && delta.ops[0].insert.trim() === '') {
+        $('#$input').val('');
+      } else {
+        $('#$input').val(quill.root.innerHTML);
+      }
+
+
+      
       var response;
       var msg;
       var url;

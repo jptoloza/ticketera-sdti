@@ -62,7 +62,7 @@
                 endswitch;
                 @endphp
                 <td><span class="badge {{ $status_color }} {{ $status_bg }} text-white text-uppercase">{{ $ticket->status }}</span></td>
-                <td>{{ App\Http\Helpers\UtilHelper::ucTexto($ticket->name) }} ({{ $ticket->email }})</td>
+                <td>{{ App\Http\Helpers\UtilHelper::ucTexto($ticket->name) }}<br/>({{ $ticket->email }})</td>
                 <td>{{ $ticket->subject }}</td>
                 <td>{{ $ticket->created_at }}</td>
                 <td>{{ $ticket->updated_at }}</td>
@@ -111,22 +111,22 @@
             className: 'text-left align-top dt-col-50px'
           },
           {
-            className: 'align-top dt-col-100px'
+            className: 'align-top text-center dt-col-100px'
           },
           {
-            className: 'align-top dt-col-80px'
+            className: 'align-top text-center dt-col-80px'
+          },
+          {
+            className: 'align-top dt-col-200px'
           },
           {
             className: 'align-top'
           },
           {
-            className: 'align-top'
+            className: 'align-top text-center dt-col-100px'
           },
           {
-            className: 'align-top dt-col-100px'
-          },
-          {
-            className: 'align-top dt-col-80px'
+            className: 'align-top text-center dt-col-80px'
           },
         ],
         createdRow: function(row, data, dataIndex) {

@@ -23,6 +23,8 @@ class SessionHelper
             'name' => session('name'),
             'email' => session('email'),
             'rut' => session('rut'),
+            'unit_id' => session('unit_id'),
+            'profile' => session('profile'),
             'roles' => session('roles'),
         ];
     }

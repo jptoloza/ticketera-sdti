@@ -31,6 +31,13 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin_units') }}" class="uc-btn btn-listed">
+                            Unidades
+                            <i class="uc-icon icon-small">chevron_right</i>
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="{{ route('admin_roles') }}" class="uc-btn btn-listed">
                             Roles
                             <i class="uc-icon icon-small">chevron_right</i>

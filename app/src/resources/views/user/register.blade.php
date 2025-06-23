@@ -7,39 +7,27 @@
         <a href="/" class="mr-0"><i class="uc-icon">home</i></a>
         <i class="uc-icon">keyboard_arrow_right</i>
       </li>
-      <li class="uc-breadcrumb_item">
-        <a href="/admin">Herramientas Administrativas</a>
-        <i class="uc-icon">keyboard_arrow_right</i>
-      </li>
-      <li class="uc-breadcrumb_item current bc-siga">Usuarios</li>
+      <li class="uc-breadcrumb_item current bc-siga">Usuario</li>
     </ol>
 
     <div class="d-flex align-items-center">
-      <h1>Usuarios</h1>
+      <h1>Usuario</h1>
       <span class="uc-heading-decoration"></span>
     </div>
 
 
     <div class="mt-2 bg-white p-2 border border-gray rounded-1">
       <div class="p-2 p-size--lg">
-        Esta sección permite administrar la información base de los usuarios en el sistema, facilitando un registro
-        claro y organizado.
-      </div>
-
-      <div class="p-2 mb-2 pl-0">
-        <a href="{{ route('admin_users') }}" class="uc-btn d-block fw-bold text-decoration-none">
-          <i class="uc-icon icon-shape--rounded">arrow_back</i>
-          Volver
-        </a>
+        Esta sección permite copletar el registro de usuario del sistema. Por favor complete la información requerida.
       </div>
 
       <hr class="uc-hr" />
 
       <div class="mx-2">
-        <form name="actionForm" id="actionForm" method="POST" action="{{ route('admin_users_edit') }}">
+        <form name="actionForm" id="actionForm" method="POST" action="{{ route('user_register_update') }}">
           @csrf
           <input type="hidden" name="id" value="{{ $user->id }}" />
-          <h4>Editar Usuario</h4>
+          <h4>Registro Usuario</h4>
           <div class="uc-text-divider divider-primary mt-16 mb-4"></div>
           <div class="p-size--sm p-text--condensed p-color--gray mb-4 mt-2">
             <span class="text-danger">*</span> Campo obligatorio.
@@ -56,13 +44,15 @@
           </div>
           <div class="uc-form-group">
             <label for="email">Email <span class="text-danger">*</span></label>
-            <input id="email" name="email" type="email" class="uc-input-style" placeholder="Ingrese email"
-              required value="{{ $user->email }}" />
+            <input type="email" class="uc-input-style" placeholder="Ingrese email" value="{{ $user->email }}"
+              disabled />
+            <input id="email" name="email" type="hidden" required value="{{ $user->email }}" />
           </div>
           <div class="uc-form-group">
             <label for="usuario">Usuario UC <span class="text-danger">*</span></label>
-            <input id="login" name="login" type="text" class="uc-input-style" placeholder="Ingrese usuario"
-              required value="{{ $user->login }}" />
+            <input type="text" class="uc-input-style" placeholder="Ingrese usuario" value="{{ $user->login }}"
+              disabled />
+            <input id="login" name="login" type="hidden" required value="{{ $user->login }}" />
           </div>
 
           <div class="uc-form-group mb-3">
@@ -74,7 +64,23 @@
                   {{ $unit->unit }}
                 </option>
               @endforeach
+              <option value="other">Otra</option>
             </select>
+            <p class="p-color--gray mt-1 mb-16">
+              Si su unidad no esta listada, por favor seleccione "Otra" y para agregarla.
+            </p>
+            <div id="div_unit_other" style="display:none">
+              <div class="uc-form-group">
+                <label>Código de unidad <span class="text-danger">*</span></label>
+                <input id="unit_code" name="unit_code" type="text" class="uc-input-style"
+                  placeholder="Ingrese código númerico de la unidad. Si no está no tiene ingrese '0'" />
+              </div>
+              <div class="uc-form-group">
+                <label>Unidad <span class="text-danger">*</span></label>
+                <input id="unit_name" name="unit_name" type="text" class="uc-input-style"
+                  placeholder="Ingrese nombre unidad" />
+              </div>
+            </div>
           </div>
 
 
@@ -98,20 +104,6 @@
               <input id="checkbox-4" name="profile[]" type="checkbox" value="Otro"
                 @if (in_array('Otro', $array_perfil)) checked @endif />
               <label for="checkbox-4">Otro</label>
-            </div>
-          </div>
-
-          <div class="uc-form-group">
-            <div>
-              <label for="active">Usuario Activo <span class="text-danger">*</span></label>
-            </div>
-            <div>
-              <input type="radio" name="active" value="1" @if ($user->active) checked @endif />
-              <label class="fw-normal">Si</label>
-            </div>
-            <div>
-              <input type="radio" name="active" value="0" @if (!$user->active) checked @endif />
-              <label class="fw-normal">No</label>
             </div>
           </div>
 
@@ -145,5 +137,17 @@
   </div>
 
 
+    <script>
+    $().ready(function(){
+
+        $('#unit').change(function(){
+            if ($(this).val() =='other' && !$('#div_unit_other').is(':visible')) {
+                $('#div_unit_other').show('slow');
+            } else {
+                $('#div_unit_other').hide('slow');
+            }
+        });
+    });
+    </script>
   {!! $ajaxUpdate !!}
 @endsection

@@ -465,6 +465,20 @@ table.dataTable > tbody > tr > td > a > .uc-icon {
     margin-right: 0px !important;
 }
 
+.form-label-ticket {
+    padding: 12px 16px;
+}
+
+td.border-top-ticket {
+    border-top-width: 1px;
+    border-color: #c6c6c6;
+}
+
+.ql-container {
+    min-height:300px !important;
+}
+
+
 @media (max-width: 768px) {
     .content-wrapper {
         flex-direction: column;

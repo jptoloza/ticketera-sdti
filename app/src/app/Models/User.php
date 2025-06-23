@@ -20,6 +20,8 @@ class User extends Model
         'rut',
         'login',
         'email',
+        'unit_id',
+        'profile'
     ];
 
     public function roles()

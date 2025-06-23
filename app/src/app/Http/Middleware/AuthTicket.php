@@ -19,6 +19,12 @@ class AuthTicket
     {
         $session = SessionHelper::current();
         if (isset($session->id)) {
+            if (!$session->unit_id || !$session->profile) {
+                $uri = $request->getRequestUri();
+                if ($uri != '/user/register' && $uri != '/user/register/update') {
+                    return redirect()->route('user_register_form');
+                }
+            }
             return $next($request);
         } else {
             return redirect('/');

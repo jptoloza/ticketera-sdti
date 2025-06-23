@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Administrator;
 
 use \Exception;
+use App\Models\Unit;
 use App\Models\User;
 use App\Http\Helpers\Jquery;
 use Illuminate\Http\Request;
 use App\Http\Helpers\RutRule;
 use App\Http\Helpers\UtilHelper;
-use App\Http\Helpers\UserSession;
 use App\Http\Helpers\LoggerHelper;
 use App\Http\Traits\ResponseTrait;
-use App\Http\Controllers\Controller;
 use App\Http\Helpers\SessionHelper;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 
@@ -36,10 +36,12 @@ class UserController extends Controller
      */
     public function get()
     {
-        $users = User::select('id','name','rut','login','email','active')->orderBy('id')->get();
+        $users = User::leftJoin('units','units.id','=','users.unit_id')
+                    ->select('users.id','users.name','users.rut','users.login','users.email','users.unit_id','units.unit','users.profile','users.active')->orderBy('id')->get();
         $data = [];
         foreach ($users as $user) {
             $link   = '<a href="' . route('admin_users_editForm', $user->id) . '" title="Editar"><span class="uc-icon">edit</span></a> <a href="' . route('admin_users_delete', $user->id) . '" class="btnDelete" title="Eliminar"><i class="uc-icon">delete</i></a>';
+            $array_profile = explode(",", $user->profile);
             $data[] = [
                 $link,
                 $user->active ? 'Sí' : 'No',
@@ -47,6 +49,8 @@ class UserController extends Controller
                 $user->login,
                 $user->rut,
                 UtilHelper::ucTexto($user->name),
+                UtilHelper::ucTexto($user->unit),
+                implode(", ", $array_profile)
             ];
         }
         return response()->json(['data' => $data], 200);
@@ -128,9 +132,10 @@ class UserController extends Controller
             abort(404);
         }
         return view('administrator.users.edit', [
-            'title'   => 'Usuarios',
-            'user' => $user,
-            'ajaxUpdate' => Jquery::ajaxPost('actionForm', '/admin/users')
+            'title'     => 'Usuarios',
+            'user'      => $user,
+            'units'     => Unit::where('active',true)->get(),
+            'ajaxUpdate'=> Jquery::ajaxPost('actionForm', '/admin/users')
         ]);
     }
 
@@ -147,6 +152,9 @@ class UserController extends Controller
                 'rut'               => [new RutRule],
                 'email'             => ['required'],
                 'login'             => ['required'],
+                'unit'              => ['required'],
+                'profile'           => ['required','array'],
+                'profile.*'         => 'in:Académico,Estudiante,Funcionario,Otro',
                 'active'            => 'required',
             ], [
                 'id'                => 'ID no es válido.',
@@ -155,6 +163,9 @@ class UserController extends Controller
                 'email'             => 'Email no es válido.',
                 'login.required'    => 'Usuario no es válido.',
                 'login.unique'      => 'Nombre Usuario existe.',
+                'unit'              => 'Unidad no es válida.',
+                'profile.required'  => 'Perfil no es válido.',
+                'profile.array'     => 'Perfil no seleccionado.',
                 'active'            => 'Usuario Activo no es válido.',
             ]);
 
@@ -179,6 +190,9 @@ class UserController extends Controller
             $user->login    = mb_convert_case($request->input('login'), MB_CASE_LOWER);
             $user->rut      = $rut;
             $user->name     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
+            $user->unit_id  = $request->input('unit');
+            $profile_options= $request->input('profile', []);
+            $user->profile  = implode(",", $profile_options);
             $user->active   = (int) $request->input('active') == 1 ? true : false;
             $user->save();
             Session::flash('message', 'Datos guardados!');

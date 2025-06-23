@@ -91,7 +91,7 @@ class StatusController extends Controller
             $status->active     = (int) $request->input('active') == 1 ? true : false;
             $status->save();
             Session::flash('message', 'Datos guardados!');
-            LoggerHelper::add($request,  'ADD|OK|ROL:' . $status->id);
+            LoggerHelper::add($request,  'ADD|OK|STATUS:' . $status->id);
             return response()->json([
                 'success'   => 'ok',
                 'data'      => $status
@@ -164,7 +164,7 @@ class StatusController extends Controller
             $status->save();
 
             Session::flash('message', 'Datos guardados!');
-            LoggerHelper::add($request,  'UPDATE|OK|ROL:' . $status->id);
+            LoggerHelper::add($request,  'UPDATE|OK|STATUS:' . $status->id);
             return response()->json([
                 'success'   => 'ok',
                 'data'      => $status
@@ -190,7 +190,7 @@ class StatusController extends Controller
         try {
             $status = Status::find($id);
             if (!$status) {
-                throw new Exception('Usuario no existe.');
+                throw new Exception('Status no existe.');
             }
             $status->delete();
             Session::flash('message', 'Datos eliminados!');

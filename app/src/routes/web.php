@@ -3,13 +3,15 @@
 use App\Http\Middleware\AuthRole;
 use App\Http\Middleware\AuthTicket;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TicketsController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Administrator\RoleController;
-use App\Http\Controllers\Administrator\UserController;
+use App\Http\Controllers\Administrator\UnitsController;
 use App\Http\Controllers\Administrator\QueuesController;
 use App\Http\Controllers\Administrator\StatusController;
+use App\Http\Controllers\Administrator\UserController as UsersController;
 //
 //
 use App\Http\Controllers\Agent\RequestsController as AgentRequestController;
@@ -33,8 +35,22 @@ Route::middleware([AuthTicket::class])->group(function () {
         ->name('dashboard');
 
 
-    // Tickets
+    Route::post('/user/register/update', [UserController::class, 'updateRegister'])
+        ->name('user_register_update');
 
+    Route::get('/user/register', [UserController::class, 'registerForm'])
+        ->name('user_register_form');
+
+    Route::post('/user/update', [UserController::class, 'update'])
+        ->name('user_update');
+
+    Route::get('/user', [UserController::class, 'index'])
+        ->name('user');
+
+
+
+
+    // Tickets
 
     Route::get('/tickets/add', [TicketsController::class, 'create'])
         ->name('tickets_addForm');
@@ -68,7 +84,7 @@ Route::middleware([AuthTicket::class])->group(function () {
 
     Route::get('/tickets/assigned', [TicketsController::class, 'indexAssigned'])
         ->name('tickets.assigned');
-    
+
     Route::get('/tickets/queue/{queueId}', [TicketsController::class, 'indexByQueue'])
         ->name('tickets.byQueue');
 
@@ -94,26 +110,52 @@ Route::middleware([AuthTicket::class])->group(function () {
             ->name('admin');
 
         // Users
-        Route::get('/admin/users/', [UserController::class, 'index'])
+        Route::get('/admin/users/', [UsersController::class, 'index'])
             ->name('admin_users');
 
-        Route::get('/admin/users/get', [UserController::class, 'get'])
+        Route::get('/admin/users/get', [UsersController::class, 'get'])
             ->name('admin_users_get');
 
-        Route::get('/admin/users/add', [UserController::class, 'create'])
+        Route::get('/admin/users/add', [UsersController::class, 'create'])
             ->name('admin_users_add_form');
 
-        Route::post('/admin/users/add', [UserController::class, 'store'])
+        Route::post('/admin/users/add', [UsersController::class, 'store'])
             ->name('admin_users_add');
 
-        Route::get('/admin/users/edit/{id}', [UserController::class, 'edit'])
+        Route::get('/admin/users/edit/{id}', [UsersController::class, 'edit'])
             ->name('admin_users_editForm');
 
-        Route::post('/admin/users/edit', [UserController::class, 'update'])
+        Route::post('/admin/users/edit', [UsersController::class, 'update'])
             ->name('admin_users_edit');
 
-        Route::get('/admin/users/delete/{id}', [UserController::class, 'destroy'])
+        Route::get('/admin/users/delete/{id}', [UsersController::class, 'destroy'])
             ->name('admin_users_delete');
+
+
+        // Academic Units
+
+        Route::get('/admin/units/', [UnitsController::class, 'index'])
+            ->name('admin_units');
+
+        Route::get('/admin/units/get', [UnitsController::class, 'get'])
+            ->name('admin_units_get');
+
+        Route::get('/admin/units/add', [UnitsController::class, 'create'])
+            ->name('admin_units_addForm');
+
+        Route::post('/admin/units/add', [UnitsController::class, 'store'])
+            ->name('admin_units_add');
+
+        Route::get('/admin/units/edit/{id}', [UnitsController::class, 'edit'])
+            ->name('admin_units_editForm');
+
+        Route::post('/admin/units/edit', [UnitsController::class, 'update'])
+            ->name('admin_units_edit');
+
+        Route::get('/admin/units/delete/{id}', [UnitsController::class, 'destroy'])
+            ->name('admin_units_delete');
+
+
 
         // Roles
         Route::get('/admin/roles/', [RoleController::class, 'index'])

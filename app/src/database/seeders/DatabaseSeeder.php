@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             RolesTableSeeder::class,
             PrioritiesTableSeeder::class,
             StatusTableSeeder::class,
+            UnitsTableSeeder::class,
         ]);
     }
 }

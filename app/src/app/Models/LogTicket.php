@@ -9,7 +9,7 @@ class LogTicket extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['ticket_id', 'action', 'data'];
+    protected $fillable = ['ticket_id', 'action', 'data', 'created_by'];
 
     public function ticket()
     {

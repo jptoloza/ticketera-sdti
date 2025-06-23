@@ -79,10 +79,30 @@
 
                     <div class="col-12">
                         <div class="uc-form-group mb-3">
-                            <label>Descripción <span class="text-danger">*</span></label>
-                            <textarea id="message" name="message" class="uc-input-style" placeholder="Ingrese descripción"
-                                style="min-height:200px" required></textarea>
-                            <div>
+                            <label>Mensaje <span class="text-danger">*</span></label>
+
+                            <div id="toolbar-container">
+                          <span class="ql-formats">
+                            <button class="ql-bold"></button>
+                            <button class="ql-italic"></button>
+                            <button class="ql-underline"></button>
+                            <button class="ql-strike"></button>
+                          </span>
+                          <span class="ql-formats">
+                            <button class="ql-list" value="ordered"></button>
+                            <button class="ql-list" value="bullet"></button>
+                          </span>
+                          <span class="ql-formats">
+                            <button class="ql-link"></button>
+                            <button class="ql-image"></button>
+                          </span>
+                        </div>
+                        <div id="editor">
+                        </div>
+
+                        <input type="hidden" id="message" name="message" value="" required />
+
+                        
                                 <ul id="file_list" style="list-style-type: none;padding-left: 0;"></ul>
 
                             </div>
@@ -207,6 +227,20 @@
     @endif
 
 
+
+
+
+
+  <script>
+    const quill = new Quill('#editor', {
+      modules: {
+        syntax: true,
+        toolbar: '#toolbar-container',
+      },
+      placeholder: 'Ingrese mensaje',
+      theme: 'snow',
+    });
+  </script>
 
     <script>
         function modalError(message) {
@@ -399,5 +433,8 @@
         });
     </script>
 
+
+
+  
     {!! $ajaxPost !!}
 @endsection

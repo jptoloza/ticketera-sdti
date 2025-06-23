@@ -10,7 +10,7 @@
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item text-white" style="padding-left:40px; font-size: 2em !important;">
-                        Mesa de Servicios Tecnológicos SDTI
+                        Mesa de Servicios SDTI
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 px-4 navbar-nav">
@@ -113,7 +113,7 @@
                         </div>
                         <ul class="uc-navbar-side">
                             <li>
-                                <a href="/user-account">
+                                <a href="{{route('user')}}">
                                     Perfil de Usuario
                                     <i class="uc-icon icon-small">keyboard_arrow_right</i>
                                 </a>

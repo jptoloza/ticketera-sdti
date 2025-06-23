@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use phpCAS;
 use \Exception;
+use App\Models\Unit;
 use App\Models\User;
+use App\Models\UserRole;
+use App\Http\Helpers\Jquery;
 use Illuminate\Http\Request;
+use App\Http\Helpers\UtilHelper;
 use App\Http\Helpers\LoggerHelper;
 use App\Http\Traits\ResponseTrait;
 use App\Http\Controllers\Controller;
-use App\Http\Helpers\UtilHelper;
 use Illuminate\Support\Facades\Session;
-use App\Models\UserRole;
 
 define('UC_CAS_VERSION', '2.0');
 define('UC_CAS_HOSTNAME2', env('CAS_HOSTNAME'));
@@ -71,8 +73,8 @@ class LoginController extends Controller
                 $name       = trim($first_name . ' ' . $last_name);
                 $email      = $email != null ? $email : $userCas . '@uc.cl';
                 $user = User::withTrashed()
-                        ->where('login', '=', $userCas)
-                        ->orWhere('email','=',$email)
+                    ->where('login', '=', $userCas)
+                    ->orWhere('email', '=', $email)
                     ->first();
                 if (is_null($user)) {
                     $user = User::create([
@@ -83,20 +85,21 @@ class LoginController extends Controller
                     ]);
                     LoggerHelper::add($request, 'CREATE USER: ' . $userCas);
                 } else {
-                    if (!is_null($user->deleted_at)) {
-                        $user->active = true;
-                        $user->deleted_at = null;
-                        $user->save();
+                    if (!is_null($user->deleted_at) || $user->active == false) {
+                        return view('errors.login');
                     }
                 }
                 $data = $user->toArray();
                 $data['navbar_name'] = UtilHelper::navbarName($data['name']);
-                Session($data); 
+                Session($data);
                 LoggerHelper::add($request, 'Login CAS OK: ' . $userCas);
+                if (!$user->unit_id || !$user->profile) {
+                    return redirect()->route('user_register_form');
+                }
                 return redirect()->route('dashboard');
             }
         } catch (Exception $e) {
-            dd($e);
+            dd($e->getMessage());
             abort(401);
         }
     }
@@ -111,4 +114,25 @@ class LoginController extends Controller
         $request->session()->invalidate();
         phpCAS::logout();
     }
+
+
+
+
+    public function registerFormCAS(string $id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            abort(404);
+        }
+        return view('administrator.users.edit', [
+            'title'     => 'Usuarios',
+            'user'      => $user,
+            'units'     => Unit::where('active', true)->get(),
+            'ajaxUpdate' => Jquery::ajaxPost('actionForm', '/admin/users')
+        ]);
+    }
+
+
+
+    public function registerCAS($request) {}
 }

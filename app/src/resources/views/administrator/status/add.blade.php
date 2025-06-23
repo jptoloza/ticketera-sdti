@@ -11,7 +11,7 @@
                 <a href="/admin">Herramientas Administrativas</a>
                 <i class="uc-icon">keyboard_arrow_right</i>
             </li>
-            <li class="uc-breadcrumb_item current bc-siga">Roles</li>
+            <li class="uc-breadcrumb_item current bc-siga">Estados</li>
         </ol>
 
         <div class="d-flex align-items-center">
@@ -47,7 +47,7 @@
                         <span class="text-danger">*</span> Campo obligatorio.
                     </div>
                     <div class="uc-form-group">
-                        <label for="first_name">Nombre Estado <span class="text-danger">*</span></label>
+                        <label for="first_name">Estado <span class="text-danger">*</span></label>
                         <input id="name" name="name" type="text" class="uc-input-style" placeholder="Ingrese nombre estado"
                             required />
                     </div>
