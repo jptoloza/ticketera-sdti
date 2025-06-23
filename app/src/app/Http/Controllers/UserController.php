@@ -67,8 +67,8 @@ class UserController extends Controller
             ];
 
             if ($request->input('unit') == 'other') {
-                $rules['unit_code'] = ['requires'];
-                $rules['unit_name'] = ['requires'];
+                $rules['unit_code'] = ['required'];
+                $rules['unit_name'] = ['required'];
                 $message['unit_code'] = 'Código de Unidad no válido';
                 $message['unit_name'] = 'Nombre de Unidad no válido';
             }
