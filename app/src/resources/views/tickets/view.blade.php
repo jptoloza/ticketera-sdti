@@ -285,7 +285,8 @@
 
 
         @if ($isAdmin)
-          <div class="bg--gray col-12 col-lg-4 pb-4 p-4">
+          <div class="bg--gray col-12 col-lg-4 pb-4 p-4 pt-5">
+            <h3>Actualizar Ticket</h3>
             <form class="p-4" name="actionForm" id="actionForm" method="POST"
               action="{{ route('tickets_update') }}">
               @csrf
