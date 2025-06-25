@@ -86,12 +86,18 @@ class UnitsController extends Controller
             if ($unit) {
                 throw new Exception('Unidad registrada anteriormente.');
             }
-            $unit = new Unit();
-            $unit->unit     = $name;
-            $unit->code     = $code;
-            $unit->validate = (int) $request->input('validate') == 1 ? true : false;
-            $unit->active   = (int) $request->input('active') == 1 ? true : false;
-            $unit->save();
+
+            $unit = Unit::withTrashed()->where('unit', $name)->first();
+            if ($unit) {
+                $unit->restore();
+            } else {
+                $unit = new Unit();
+                $unit->unit     = $name;
+                $unit->code     = $code;
+                $unit->validate = (int) $request->input('validate') == 1 ? true : false;
+                $unit->active   = (int) $request->input('active') == 1 ? true : false;
+                $unit->save();
+            }
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request,  'ADD|OK|UNIT:' . $unit->id);
             return response()->json([

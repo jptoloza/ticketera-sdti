@@ -271,16 +271,21 @@ class RoleController extends Controller
                 'role_id' => 'Role ID no es valido',
                 'user_id' => 'Usuario no es valido.',
             ]);
-
             $userRole = UserRole::where('user_id', $request->input('user_id'))
                 ->where('role_id',  $request->input('role_id'))->first();
             if ($userRole) {
                 throw new Exception('Usuario registrado anteriormente.');
             }
-            $userRole = new UserRole();
-            $userRole->role_id = $request->input('role_id');
-            $userRole->user_id = $request->input('user_id');
-            $userRole->save();
+            $userRole = UserRole::withTrashed()->where('user_id', '=',$request->input('user_id'))
+                ->where('role_id',  '=',$request->input('role_id'))->first();
+            if ($userRole) {
+                $userRole->restore();
+            } else {
+                $userRole = new UserRole();
+                $userRole->role_id = $request->input('role_id');
+                $userRole->user_id = $request->input('user_id');
+                $userRole->save();
+            }
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request, 'ADD|OK|USER_ROLE:' . $userRole->id);
             return response()->json([

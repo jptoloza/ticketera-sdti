@@ -84,6 +84,7 @@ class LoginController extends Controller
                         'name'  => $name,
                     ]);
                     LoggerHelper::add($request, 'CREATE USER: ' . $userCas);
+                    
                 } else {
                     if (!is_null($user->deleted_at) || $user->active == false) {
                         return view('errors.login');

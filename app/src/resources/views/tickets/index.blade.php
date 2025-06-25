@@ -40,28 +40,26 @@
                 @php
                   $status_color = '';
                   $status_bg = '';
-
                   switch($ticket->global_key):
                     case 'STATUS_OPEN':
                       $status_color = 'bg-uc-feedback-blue';
                       $status_bg = 'text-white';
-                      
                     break;
                     case 'STATUS_CLOSED':
-                      $status_color = 'bg-uc-feedback-green';
-                      $status_bg = 'text-white';
+                      $status_color = 'text-white';
+                      $status_bg = 'bg-uc-feedback-green';
                     break;
                     case 'STATUS_CANCELLED':
-                      $status_color = 'bg-uc-feedback-red';
-                      $status_bg = 'text-white';
+                      $status_color = 'text-white';
+                      $status_bg = 'bg-uc-feedback-red';
                     break;
                     default:
-                      $status_color = 'bg-uc-feedback-yellow';
-                      $status_bg = 'text-white';
+                      $status_color = 'text-black';
+                      $status_bg = 'bg-uc-feedback-yellow';
                     break;
                 endswitch;
                 @endphp
-                <td><span class="badge {{ $status_color }} {{ $status_bg }} text-white text-uppercase">{{ $ticket->status }}</span></td>
+                <td><span class="badge {{ $status_color }} {{ $status_bg }} text-uppercase">{{ $ticket->status }}</span></td>
                 <td>{{ App\Http\Helpers\UtilHelper::ucTexto($ticket->name) }}<br/>({{ $ticket->email }})</td>
                 <td>{{ $ticket->subject }}</td>
                 <td>{{ $ticket->created_at }}</td>

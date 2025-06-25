@@ -9,5 +9,5 @@ class Notification extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['type'];
+    protected $fillable = ['type_notification_id', 'register_id','contents'];
 }

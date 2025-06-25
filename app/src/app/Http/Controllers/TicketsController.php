@@ -21,6 +21,8 @@ use App\Http\Helpers\UtilHelper;
 use App\Http\Helpers\LoggerHelper;
 use App\Http\Traits\ResponseTrait;
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
+use App\Models\TypeNotification;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 
@@ -40,7 +42,18 @@ class TicketsController extends Controller
             ->join('users', 'users.id', '=', 'tickets.user_id')
             ->join('queues', 'queues.id', '=', 'tickets.queue_id')
             ->orderByDesc('id')
-            ->select('tickets.id', 'tickets.subject', 'tickets.created_at', 'tickets.updated_at', 'status.status', 'status.id as status_id', 'status.global_key', 'queues.queue', 'users.name', 'users.email')
+            ->select(
+                'tickets.id',
+                'tickets.subject',
+                'tickets.created_at',
+                'tickets.updated_at',
+                'status.status',
+                'status.id as status_id',
+                'status.global_key',
+                'queues.queue',
+                'users.name',
+                'users.email'
+            )
             ->get();
         return view('tickets.index', [
             'title' => 'Tickets',
@@ -74,14 +87,18 @@ class TicketsController extends Controller
                 'tickets.created_at',
                 'tickets.updated_at',
                 'status.status',
+                'status.id as status_id',
+                'status.global_key',
                 'queues.queue',
                 'users.name',
                 'users.email'
             )
             ->get();
+        $queue = Queue::find($queueId);
         return view('tickets.indexUnassigned', [
-            'title' => 'Tickets no asignados',
-            'tickets' => $tickets,
+            'title'     => $queue->queue . ': Tickets no asignados',
+            'tickets'   => $tickets,
+            'queue'     => $queue
         ]);
     }
 
@@ -105,6 +122,8 @@ class TicketsController extends Controller
                 'tickets.created_at',
                 'tickets.updated_at',
                 'status.status',
+                'status.id as status_id',
+                'status.global_key',
                 'queues.queue',
                 'users.name',
                 'users.email'
@@ -131,11 +150,30 @@ class TicketsController extends Controller
             abort(403, 'No tienes acceso a esta cola.');
         }
 
-        $tickets = Ticket::where('queue_id', $queueId)->join('status', 'status.id', '=', 'tickets.status_id')->join('priorities', 'priorities.id', '=', 'tickets.priority_id')->join('users', 'users.id', '=', 'tickets.user_id')->join('queues', 'queues.id', '=', 'tickets.queue_id')->orderByDesc('tickets.id')->select('tickets.id', 'tickets.subject', 'tickets.created_at', 'tickets.updated_at', 'status.status', 'queues.queue', 'users.name', 'users.email')->get();
-
+        $tickets = Ticket::where('queue_id', $queueId)
+            ->join('status', 'status.id', '=', 'tickets.status_id')
+            ->join('priorities', 'priorities.id', '=', 'tickets.priority_id')
+            ->join('users', 'users.id', '=', 'tickets.user_id')
+            ->join('queues', 'queues.id', '=', 'tickets.queue_id')
+            ->orderByDesc('tickets.id')
+            ->select(
+                'tickets.id',
+                'tickets.subject',
+                'tickets.created_at',
+                'tickets.updated_at',
+                'status.status',
+                'status.id as status_id',
+                'status.global_key',
+                'queues.queue',
+                'users.name',
+                'users.email'
+            )
+            ->get();
+        $queue = Queue::find($queueId);
         return view('tickets.indexByQueue', [
-            'title' => 'Tickets de la cola',
-            'tickets' => $tickets,
+            'title'     => $queue->queue . ': Todos los tickets',
+            'tickets'   => $tickets,
+            'queue'     => $queue
         ]);
     }
 
@@ -147,8 +185,15 @@ class TicketsController extends Controller
      */
     public function view(Request $request, $id = null)
     {
-        if (in_array(UtilHelper::globalKey('ROLE_AGENT'), Session::all()['roles']) || in_array(UtilHelper::globalKey('ROLE_ADMIN'), Session::all()['roles'])) {
-            $ticket = Ticket::where('tickets.id', $id)->join('status', 'tickets.status_id', '=', 'status.id')->select('tickets.*', 'status.status', 'status.global_key')->first();
+        if (
+            in_array('ROLE_ADMINISTRATOR', session('roles')) ||
+            in_array('ROLE_AGENT', session('roles')) ||
+            in_array('ROLE_MANAGER', session('roles'))
+        ) {
+            $ticket = Ticket::where('tickets.id', $id)
+                ->join('status', 'tickets.status_id', '=', 'status.id')
+                ->select('tickets.*', 'status.status', 'status.global_key')
+                ->first();
         } else {
             $ticket = Ticket::where('user_id', Session::all()['id'])
                 ->where('tickets.id', $id)
@@ -160,16 +205,16 @@ class TicketsController extends Controller
             abort(404);
         }
 
-        $requesterBy = User::find($ticket->user_id);
-        $createdBy = User::find($ticket->created_by);
-        $priorities = Priority::where('active', true)->orderBy('id')->get();
-        $status = Status::where('active', true)->orderBy('id')->get();
-        $queues = Queue::where('active', true)->orderBy('id')->get();
-        $logs = LogTicket::where('ticket_id', $ticket->id)->orderByDesc('id')->get();
-        $messages = TicketMessage::where('ticket_id', $ticket->id)->join('users', 'users.id', '=', 'ticket_messages.created_by')->select('ticket_messages.*', 'users.name')->orderBy('id')->get();
-        $id = $request->input('queue_id');
-        $agentsIS = QueueUser::where('queue_id', '=', $ticket->queue_id)->get();
-        $agents = [];
+        $requesterBy    = User::find($ticket->user_id);
+        $createdBy      = User::find($ticket->created_by);
+        $priorities     = Priority::where('active', true)->orderBy('id')->get();
+        $status         = Status::where('active', true)->orderBy('id')->get();
+        $queues         = Queue::where('active', true)->orderBy('id')->get();
+        $logs           = LogTicket::where('ticket_id', $ticket->id)->orderByDesc('id')->get();
+        $messages       = TicketMessage::where('ticket_id', $ticket->id)->join('users', 'users.id', '=', 'ticket_messages.created_by')->select('ticket_messages.*', 'users.name')->orderBy('id')->get();
+        $id             = $request->input('queue_id');
+        $agentsIS       = QueueUser::where('queue_id', '=', $ticket->queue_id)->get();
+        $agents         = [];
         foreach ($agentsIS as $agent) {
             $user = User::find($agent->user_id);
             $agents[] = $user->toArray();
@@ -254,6 +299,14 @@ class TicketsController extends Controller
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request, 'ADD|OK|TICKET:' . $ticket->id);
             LoggerHelper::ticket($request, 'Ticket creado por ' . Session::all()['name'], $ticket->id, $ticket, Session::all()['id']);
+            $type = TypeNotification::where('type', 'NEW')->first();
+
+            Notification::create([
+                'type_notification_id'  => $type->id,
+                'register_id'           => $ticket->id,
+                'sent'                  => false,
+                'execute'               => false
+            ]);
             return response()->json(
                 [
                     'success' => 'ok',

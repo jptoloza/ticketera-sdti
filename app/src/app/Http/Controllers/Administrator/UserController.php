@@ -87,7 +87,6 @@ class UserController extends Controller
                 'login.unique'      => 'Nombre Usuario existe.',
                 'active'            => 'Usuario Activo no es válido.',
             ]);
-
             $rut = preg_replace("/\./", "", $request->input('rut'));
             $user = User::where('email', '=', $request->input('email'))
                 ->orWhere('login', '=', $request->input('login'))
@@ -96,7 +95,15 @@ class UserController extends Controller
             if ($user) {
                 throw new Exception('Usuario registrado anteriormente.');
             }
-            $user = new User();
+            $user = User::withTrashed()->where('email', '=', $request->input('email'))
+                ->orWhere('login', '=', $request->input('login'))
+                ->orWhere('rut', '=', $rut)
+                ->first();
+            if ($user) {
+                $user->restore();
+            } else {
+                $user = new User();
+            }
             $user->email    = mb_convert_case($request->input('email'), MB_CASE_LOWER);
             $user->login    = mb_convert_case($request->input('login'), MB_CASE_LOWER);
             $user->rut      = $rut;

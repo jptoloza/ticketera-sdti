@@ -39,8 +39,8 @@
       </ul>
     </li>
 
-    @if (in_array('ROLE_AGENT', session('roles')) || 
-        in_array('ROLE_MANAGER', session('roles')))
+    @if ((in_array('ROLE_AGENT', session('roles')) || 
+        in_array('ROLE_MANAGER', session('roles'))) && count($userQueues))
 
     <li>
       <a href="#" class="uc-navbar-side_label active">

@@ -6,10 +6,6 @@
       <a href="/"><i class="uc-icon">home</i></a>
       <i class="uc-icon">keyboard_arrow_right</i>
     </li>
-    <li class="uc-breadcrumb_item current">
-      <a href="{{ route('tickets') }}">Mis Tickets</a>
-      <i class="uc-icon">keyboard_arrow_right</i>
-    </li>
     <li class="uc-breadcrumb_item current">Ticket #{{ $ticket->id }}: {{ $ticket->subject }}</li>
   </ol>
 
@@ -26,14 +22,18 @@
         $created_at = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_at);
         $updated_at = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated_at);
         $isAdmin = false;
-        if (in_array(App\Http\Helpers\UtilHelper::globalKey('ROLE_AGENT'), Session::all()['roles'])) {
+        if (
+            in_array('ROLE_ADMINISTRATOR', session('roles')) ||
+            in_array('ROLE_MANAGER', session('roles')) ||
+            in_array('ROLE_AGENT', session('roles'))
+        ) {
             $isAdmin = true;
         }
 
       @endphp
 
       <div class="row">
-        <div class="col-12 @if ($isAdmin) col-lg-8 @endif pb-4">
+        <div class="col-12 @if ($isAdmin) col-lg-9 @endif pb-4">
           <div class="uc-tabpanel" data-tabpanel>
             <!-- Tabs mobile se muestran como Select -->
             <div class="uc-card card-bg--gray card-radius--none card-border--none d-block d-lg-none mb-32">
@@ -285,9 +285,9 @@
 
 
         @if ($isAdmin)
-          <div class="bg--gray col-12 col-lg-4 pb-4 p-4 pt-5">
+          <div class="bg--gray col-12 col-lg-3 p-4  pt-5 p">
             <h3>Actualizar Ticket</h3>
-            <form class="p-4" name="actionForm" id="actionForm" method="POST"
+            <form class="" name="actionForm" id="actionForm" method="POST"
               action="{{ route('tickets_update') }}">
               @csrf
               <input type="hidden" name="id" value="{{ $ticket->id }}" />
@@ -297,7 +297,7 @@
                   <option value="">Seleccionar</option>
                   @foreach ($agents as $agent)
                     <option value="{{ $agent['id'] }}" @if ($agent['id'] == $ticket->assigned_agent) selected="selected" @endif>
-                      {{ $agent['name'] }}</option>
+                      {{ App\Http\Helpers\UtilHelper::ucTexto($agent['name']) }}</option>
                   @endforeach
                 </select>
               </div>

@@ -6,7 +6,7 @@
       <a href="/"><i class="uc-icon">home</i></a>
       <i class="uc-icon">keyboard_arrow_right</i>
     </li>
-    <li class="uc-breadcrumb_item current">Mis tickets</li>
+    <li class="uc-breadcrumb_item current">Mis tickets asignados</li>
   </ol>
 
 
@@ -40,28 +40,26 @@
                 @php
                   $status_color = '';
                   $status_bg = '';
-
                   switch($ticket->global_key):
                     case 'STATUS_OPEN':
-                      $status_color = 'bg-uc-feedback-blue';
-                      $status_bg = 'text-white';
-                      
+                      $status_color = 'text-white';
+                      $status_bg = 'bg-uc-feedback-blue';
                     break;
                     case 'STATUS_CLOSED':
-                      $status_color = 'bg-uc-feedback-green';
-                      $status_bg = 'text-white';
+                      $status_color = 'text-white';
+                      $status_bg = 'bg-uc-feedback-green';
                     break;
                     case 'STATUS_CANCELLED':
-                      $status_color = 'bg-uc-feedback-red';
-                      $status_bg = 'text-white';
+                      $status_color = 'text-white';
+                      $status_bg = 'bg-uc-feedback-red';
                     break;
                     default:
-                      $status_color = 'bg-uc-feedback-yellow';
-                      $status_bg = 'text-white';
+                      $status_color = 'text-black';
+                      $status_bg = 'bg-uc-feedback-yellow';
                     break;
                 endswitch;
                 @endphp
-                <td><span class="badge {{ $status_color }} {{ $status_bg }} text-white text-uppercase">{{ $ticket->status }}</span></td>
+                <td><span class="badge {{ $status_color }} {{ $status_bg }} text-uppercase">{{ $ticket->status }}</span></td>
                 <td class="align-top">{{ $ticket->name }} ({{ $ticket->email }})</td>
                 <td class="align-top">{{ $ticket->subject }}</td>
                 <td class="align-top" style="width: 100px">{{ $ticket->created_at }}</td>

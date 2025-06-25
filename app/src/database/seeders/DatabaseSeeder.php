@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             PrioritiesTableSeeder::class,
             StatusTableSeeder::class,
             UnitsTableSeeder::class,
+            TypeNotificationTableSeeder::class
         ]);
     }
 }

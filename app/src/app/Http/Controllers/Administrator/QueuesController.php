@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Helpers\UtilHelper;
 use App\Http\Helpers\LoggerHelper;
 use App\Http\Traits\ResponseTrait;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
@@ -27,13 +28,13 @@ class QueuesController extends Controller
     {
         return view('administrator.queues.index', [
             'title'   => 'Colas',
-            'ajaxGet' => Jquery::ajaxGet('url', '/admin/colas')
+            'ajaxGet' => Jquery::ajaxGet('url', '/admin/queue')
         ]);
     }
 
     public function get()
     {
-        $queues = Queue::select('id','queue','active')->orderBy('id')->get();
+        $queues = Queue::select('id', 'queue', 'active')->orderBy('id')->get();
         $data = [];
         foreach ($queues as $queue) {
             $link   = '<a href="' . route('admin_queues_editForm', ['id' => $queue->id]) . '" title="Editar"><span class="uc-icon">edit</span></a> 
@@ -77,10 +78,16 @@ class QueuesController extends Controller
             if ($queue) {
                 throw new Exception('Rol registrado anteriormente.');
             }
-            $queue = new Queue();
-            $queue->queue    = mb_convert_case($request->input('name'), MB_CASE_UPPER);
-            $queue->active   = (int) $request->input('active') == 1 ? true : false;
-            $queue->save();
+
+            $queue = Queue::withTrashed()->where('queue', '=', $request->input('name'))->first();
+            if ($queue) {
+                $queue->restore();
+            } else {
+                $queue = new Queue();
+                $queue->queue    = mb_convert_case($request->input('name'), MB_CASE_UPPER);
+                $queue->active   = (int) $request->input('active') == 1 ? true : false;
+                $queue->save();
+            }
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request,  'ADD|OK|QUEUE:' . $queue->id);
             return response()->json([
@@ -221,16 +228,29 @@ class QueuesController extends Controller
             $data[$value->id] = $_data;
         }
         $dataUsers = [];
-        
-        
+
+
+        $adminRoleId = UtilHelper::globalKey('ROLE_ADMINISTRATOR');
+        $managerRoleId = UtilHelper::globalKey('ROLE_MANAGERR');
         $agentRoleId = UtilHelper::globalKey('ROLE_AGENT');
+
+
         $assignedUserIds = QueueUser::where('queue_id', $queue->id)
             ->pluck('user_id')
             ->toArray();
-
         $users = User::join('user_roles', 'users.id', '=', 'user_roles.user_id')
             ->where('users.active', true)
-            ->where('user_roles.role_id', $agentRoleId)
+            ->where(function ($query) {
+
+                $adminRoleId = UtilHelper::globalKey('ROLE_ADMINISTRATOR');
+                $managerRoleId = UtilHelper::globalKey('ROLE_MANAGER');
+                $agentRoleId = UtilHelper::globalKey('ROLE_AGENT');
+
+
+                $query->where('user_roles.role_id', '=', $agentRoleId)
+                    ->orWhere('user_roles.role_id', '=', $adminRoleId)
+                    ->orWhere('user_roles.role_id', '=', $managerRoleId);
+            })
             ->whereNotIn('users.id', $assignedUserIds)
             ->select('users.*')
             ->orderBy('users.name', 'asc')
@@ -269,10 +289,16 @@ class QueuesController extends Controller
             if ($userQueue) {
                 throw new Exception('Usuario registrado anteriormente.');
             }
-            $userQueue = new QueueUser();
-            $userQueue->queue_id = $request->input('queue_id');
-            $userQueue->user_id = $request->input('user_id');
-            $userQueue->save();
+            $userQueue = QueueUser::withTrashed()->where('user_id', $request->input('user_id'))
+                ->where('queue_id',  $request->input('queue_id'))->first();
+            if ($userQueue) {
+                $userQueue->restore();
+            } else {
+                $userQueue = new QueueUser();
+                $userQueue->queue_id = $request->input('queue_id');
+                $userQueue->user_id = $request->input('user_id');
+                $userQueue->save();
+            }
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request, 'ADD|OK|USER_QUEUE:', $userQueue->id);
             return response()->json([
