@@ -19,11 +19,11 @@
 
 
       <div class="table-responsive">
-        <table class="table table-hover" id="data" style="width:100% !important">
+        <table class="table table-striped uc-datatable" id="data" style="width:100% !important">
           <thead class="bg-uc-blue-1">
             <tr>
               <th>ID</th>
-              <th>Cola</th>
+              <th>Equipo</th>
               <th>Estado</th>
               <th>Solicitante</th>
               <th>Asunto</th>
@@ -37,11 +37,31 @@
               <tr data-id="{{ route('tickets_view',['id' => $ticket->id]) }}">
                 <td class="align-top" style="width: 80px">{{ $ticket->id }}</td>
                 <td class="align-top">{{ $ticket->queue }}</td>
-                <td class="align-top">
-                  <span class="badge {{ App\Http\Helpers\UtilHelper::statusBadgeClass($ticket->status) }} text-uppercase">
-                    {{ $ticket->status }}
-                  </span>
-                </td>
+                @php
+                  $status_color = '';
+                  $status_bg = '';
+
+                  switch($ticket->global_key):
+                    case 'STATUS_OPEN':
+                      $status_color = 'bg-uc-feedback-blue';
+                      $status_bg = 'text-white';
+                      
+                    break;
+                    case 'STATUS_CLOSED':
+                      $status_color = 'bg-uc-feedback-green';
+                      $status_bg = 'text-white';
+                    break;
+                    case 'STATUS_CANCELLED':
+                      $status_color = 'bg-uc-feedback-red';
+                      $status_bg = 'text-white';
+                    break;
+                    default:
+                      $status_color = 'bg-uc-feedback-yellow';
+                      $status_bg = 'text-white';
+                    break;
+                endswitch;
+                @endphp
+                <td><span class="badge {{ $status_color }} {{ $status_bg }} text-white text-uppercase">{{ $ticket->status }}</span></td>
                 <td class="align-top">{{ $ticket->name }} ({{ $ticket->email }})</td>
                 <td class="align-top">{{ $ticket->subject }}</td>
                 <td class="align-top" style="width: 100px">{{ $ticket->created_at }}</td>
@@ -88,25 +108,25 @@
         scrollX: true,
         ordering: false,
         columns: [{
-            className: 'align-top dt-col-80px'
+            className: 'text-left align-top dt-col-50px'
           },
           {
-            className: 'align-top dt-col-100px'
+            className: 'align-top text-center dt-col-100px'
           },
           {
-            className: 'align-top dt-col-80px'
+            className: 'align-top text-center dt-col-80px'
+          },
+          {
+            className: 'align-top dt-col-200px'
           },
           {
             className: 'align-top'
           },
           {
-            className: 'align-top'
+            className: 'align-top text-center dt-col-100px'
           },
           {
-            className: 'align-top dt-col-100px'
-          },
-          {
-            className: 'align-top dt-col-80px'
+            className: 'align-top text-center dt-col-80px'
           },
         ]
       });
