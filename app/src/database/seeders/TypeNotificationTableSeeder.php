@@ -17,6 +17,7 @@ class TypeNotificationTableSeeder extends Seeder
             ['type' => 'NEW'],
             ['type' => 'MESSAGE'],
             ['type' => 'ADMIN'],
+            ['type' => 'CHANGE_STATUS'],
         ]);
     }
 }

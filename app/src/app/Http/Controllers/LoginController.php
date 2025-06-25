@@ -8,8 +8,10 @@ use App\Models\Unit;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Http\Helpers\Jquery;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Http\Helpers\UtilHelper;
+use App\Models\TypeNotification;
 use App\Http\Helpers\LoggerHelper;
 use App\Http\Traits\ResponseTrait;
 use App\Http\Controllers\Controller;
@@ -84,7 +86,14 @@ class LoginController extends Controller
                         'name'  => $name,
                     ]);
                     LoggerHelper::add($request, 'CREATE USER: ' . $userCas);
-                    
+                    $type = TypeNotification::where('type', 'ADMIN')->first();
+                    Notification::create([
+                        'type_notification_id'  => $type->id,
+                        'register_id'           => $user->id,
+                        'sent'                  => false,
+                        'execute'               => false,
+                        'contents'              => 'Nuevo Usuario'
+                    ]);
                 } else {
                     if (!is_null($user->deleted_at) || $user->active == false) {
                         return view('errors.login');

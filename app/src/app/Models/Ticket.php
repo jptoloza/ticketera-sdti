@@ -50,10 +50,6 @@ class Ticket extends Model
         return $this->hasMany(TicketMessage::class);
     }
 
-    public function notifications()
-    {
-        return $this->hasMany(TicketNotification::class);
-    }
 
     public function logs()
     {

@@ -300,7 +300,7 @@ class QueuesController extends Controller
                 $userQueue->save();
             }
             Session::flash('message', 'Datos guardados!');
-            LoggerHelper::add($request, 'ADD|OK|USER_QUEUE:', $userQueue->id);
+            LoggerHelper::add($request, 'ADD|OK|USER_QUEUE:' . $userQueue->id);
             return response()->json([
                 'success'   => 'ok',
                 'data'      => $userQueue
@@ -331,7 +331,7 @@ class QueuesController extends Controller
             }
             $userQueue->delete();
             Session::flash('message', 'Datos eliminados!');
-            LoggerHelper::add($request, 'DELETE|OK|USER_QUEUE:', $id);
+            LoggerHelper::add($request, 'DELETE|OK|USER_QUEUE:' . $id);
 
             return response()->json([
                 'success'   => 'ok',

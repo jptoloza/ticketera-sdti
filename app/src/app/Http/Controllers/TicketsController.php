@@ -300,7 +300,6 @@ class TicketsController extends Controller
             LoggerHelper::add($request, 'ADD|OK|TICKET:' . $ticket->id);
             LoggerHelper::ticket($request, 'Ticket creado por ' . Session::all()['name'], $ticket->id, $ticket, Session::all()['id']);
             $type = TypeNotification::where('type', 'NEW')->first();
-
             Notification::create([
                 'type_notification_id'  => $type->id,
                 'register_id'           => $ticket->id,
@@ -356,6 +355,13 @@ class TicketsController extends Controller
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request, 'ADD|OK|TICKETMESSAGE:' . $ticket->id);
             LoggerHelper::ticket($request, 'Nuevo mensaje creada por ' . Session::all()['name'], $ticket->ticket_id, $ticket, Session::all()['id']);
+            $type = TypeNotification::where('type', 'MESSAGE')->first();
+            Notification::create([
+                'type_notification_id'  => $type->id,
+                'register_id'           => $ticket->id,
+                'sent'                  => false,
+                'execute'               => false
+            ]);
             return response()->json(
                 [
                     'success' => 'ok',
@@ -416,6 +422,13 @@ class TicketsController extends Controller
                 $old_status = Status::find($old_status_id);
                 $new_status = Status::find($new_status_id);
                 $action .= '. Cambio de estado: ' . $old_status->status . ' &rarr; <b>' . $new_status->status . '</b>';
+                $type = TypeNotification::where('type', 'CHANGE_STATUS')->first();
+                Notification::create([
+                    'type_notification_id'  => $type->id,
+                    'register_id'           => $ticket->id,
+                    'sent'                  => false,
+                    'execute'               => false
+                ]);
             }
             LoggerHelper::ticket($request, $action, $ticket->id, $ticket, Session::all()['id']);
             return response()->json(
@@ -585,6 +598,14 @@ class TicketsController extends Controller
             $user->save();
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request, 'ADD|OK|USER:' . $user->id);
+             $type = TypeNotification::where('type', 'ADMIN')->first();
+                Notification::create([
+                    'type_notification_id'  => $type->id,
+                    'register_id'           => $user->id,
+                    'sent'                  => false,
+                    'execute'               => false,
+                    'contents'              => 'Nuevo Usuario'
+                ]);
             return response()->json(
                 [
                     'success' => 'ok',
