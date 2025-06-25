@@ -244,23 +244,4 @@ Route::middleware([AuthTicket::class])->group(function () {
             ->name('admin_status_delete');
     });
 
-
-
-
-    // Agents
-    Route::middleware([AuthRole::class . ':ROLE_AGENT'])->group(function () {
-
-        // Admin Routes //
-        Route::get('/agent/queues/{id}', [DashboardAdminController::class, 'index'])
-            ->name('agent_queues');
-    });
-
-
-
-
-    //
-    Route::get('/agent/request/{id}', [AgentRequestController::class, 'show'])
-        ->name('agent_reqest');
-    Route::get('/agent/request', [AgentRequestController::class, 'index'])
-        ->name('agent_request');
 });

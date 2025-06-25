@@ -71,7 +71,7 @@
     <!-- Contenido Principal -->
     <div class="content-wrapper">
       <!-- Aside -->
-      <aside class="aside d-none d-lg-block col-lg-2 bg-white p-0 m-3 me-0">
+      <aside class="aside d-none d-lg-block col-lg-3 bg-white p-0 m-3 me-0">
         @include('layout.menu')
       </aside>
 

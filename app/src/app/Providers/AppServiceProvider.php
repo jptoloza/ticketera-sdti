@@ -25,16 +25,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
         View::composer('layout.menu', function ($view) {
             $queues = [];
             $dataQueue = [];
             $myAsignedTickets = 0;
             $myTickets = 0;
-
             $userSession = SessionHelper::current();
-            $role_agent = UtilHelper::globalKey('ROLE_AGENT');
-            if ($userSession->id && in_array($role_agent, $userSession->roles)) {
+            if ($userSession->id && (in_array('ROLE_AGENT', $userSession->roles) || in_array('ROLE_MANAGER', $userSession->roles))) {
                 $queues = Queue::whereHas('users', function ($q) use ($userSession) {
                     $q->where('user_id', $userSession->id);
                 })->where('active', true)->get();
@@ -52,15 +49,10 @@ class AppServiceProvider extends ServiceProvider
                     ])
                     ->count();
             }
-
-            
             $myTickets = Ticket::where('user_id',$userSession->id)
                             ->where('status_id','!=', UtilHelper::globalKey('STATUS_CLOSED'))
                             ->where('status_id','!=', UtilHelper::globalKey('STATUS_CANCELLED'))
                             ->count();
-
-
-
             $view->with([
                 'userQueues'        => $queues,
                 'dataQueue'         => $dataQueue,

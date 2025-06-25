@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Helpers\SessionHelper;
 use Illuminate\Support\Facades\Session;

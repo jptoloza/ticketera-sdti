@@ -28,7 +28,7 @@
           </a>
         </li>
 
-        @if (in_array(App\Http\Helpers\UtilHelper::globalKey('ROLE_AGENT'), Session::all()['roles']))
+        @if (in_array('ROLE_AGENT', session('roles')))
       <li>
         <a href="{{ route('tickets.assigned') }}">
         Mis tickets asignados ({{ $myAsignedTickets }})
@@ -39,7 +39,8 @@
       </ul>
     </li>
 
-    @if (in_array(App\Http\Helpers\UtilHelper::globalKey('ROLE_AGENT'), Session::all()['roles']))
+    @if (in_array('ROLE_AGENT', session('roles')) || 
+        in_array('ROLE_MANAGER', session('roles')))
 
     <li>
       <a href="#" class="uc-navbar-side_label active">

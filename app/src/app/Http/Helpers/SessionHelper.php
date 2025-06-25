@@ -10,13 +10,11 @@ class SessionHelper
     public static function current()
     {
         $userId = session('id');
-        $userRoles = UserRole::where('user_id', $userId)->select('role_id')->get();
-        $roles = [];
-        foreach ($userRoles as $userRol) {
-            $roles[] = $userRol->role_id;
-        }
+        $userRoles = UserRole::where('user_id', $userId)
+                        ->join('roles','roles.id', '=', 'user_roles.role_id')
+                        ->pluck('roles.global_key','roles.id')->toArray();
         $data = Session::all();
-        $data['roles'] = $roles;
+        $data['roles'] = $userRoles;
         Session($data);
         return (object) [
             'id' => session('id'),

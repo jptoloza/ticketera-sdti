@@ -53,7 +53,7 @@
                             alt="Pontificia Universidad Católica de Chile" class="img-fluid" />
                     </div>
                     <div class="col-lg-8 col-xl-9 pl-60">
-                        <div class="h2 text-font--serif text-color--blue mt-24">Mesa de Servicios Tecnológicos SDTI
+                        <div class="h2 text-font--serif text-color--blue mt-24">Mesa de Servicios SDTI
                         </div>
                         <div class="text-color--gray p-size--lg">
                             Dirección de Transformación Digital
@@ -115,7 +115,7 @@
                 </div>
                 <div class="col-lg-8 offset-lg-1">
                     <div class="h2 color-white text-font--serif mt-28">
-                        Mesa de Servicios Tecnológicos SDTI
+                        Mesa de Servicios SDTI
                     </div>
                 </div>
             </div>
