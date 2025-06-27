@@ -17,7 +17,9 @@ class StatusController extends Controller
     use ResponseTrait;
 
     /**
-     * Display a listing of the resource.
+     *  
+     * Summary of index
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -29,6 +31,7 @@ class StatusController extends Controller
 
     /**
      * 
+     * Summary of get
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function get()
@@ -51,7 +54,9 @@ class StatusController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 
+     * Summary of create
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -61,23 +66,25 @@ class StatusController extends Controller
         ]);
     }
 
-
     /**
-     * Store a newly created resource in storage.
+     * 
+     * Summary of store
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|StatusController|string|\Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         try {
             $validated = $request->validate([
-                'name'              => ['required'],
-                'global_key'        => ['required'],
-                'active'            => 'required',
+                'name'        => ['required'],
+                'global_key'  => ['required'],
+                'active'      => 'required',
             ], [
-                'name'              => 'Nombre no es válido.',
-                'global_key'        => 'Global Key no es válido.',
-                'active'            => 'Activo no es válido.',
+                'name'        => 'Nombre no es válido.',
+                'global_key'  => 'Global Key no es válido.',
+                'active'      => 'Activo no es válido.',
             ]);
-
             $name     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
             $global_key = mb_convert_case($request->input('global_key'), MB_CASE_UPPER);
             $status = Status::where('status', $name)
@@ -109,7 +116,10 @@ class StatusController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 
+     * Summary of edit
+     * @param string $id
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit(string $id)
     {
@@ -125,7 +135,11 @@ class StatusController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 
+     * Summary of update
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|StatusController|string|\Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
@@ -162,7 +176,6 @@ class StatusController extends Controller
             $status->global_key = $global_key;
             $status->active     = (int) $request->input('active') == 1 ? true : false;
             $status->save();
-
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request,  'UPDATE|OK|STATUS:' . $status->id);
             return response()->json([
@@ -183,7 +196,11 @@ class StatusController extends Controller
 
     /**
      * 
-     * Remove the specified resource from storage.
+     * Summary of destroy
+     * @param \Illuminate\Http\Request $request
+     * @param string $id
+     * @throws \Exception
+     * @return bool|mixed|StatusController|string|\Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, string $id)
     {

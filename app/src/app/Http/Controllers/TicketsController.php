@@ -14,15 +14,15 @@ use App\Models\LogTicket;
 use App\Models\QueueUser;
 use Illuminate\Support\Str;
 use App\Http\Helpers\Jquery;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Http\Helpers\RutRule;
 use App\Models\TicketMessage;
 use App\Http\Helpers\UtilHelper;
+use App\Models\TypeNotification;
 use App\Http\Helpers\LoggerHelper;
 use App\Http\Traits\ResponseTrait;
 use App\Http\Controllers\Controller;
-use App\Models\Notification;
-use App\Models\TypeNotification;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 
@@ -31,7 +31,8 @@ class TicketsController extends Controller
     use ResponseTrait;
 
     /**
-     *
+     * 
+     * Summary of index
      * @return \Illuminate\Contracts\View\View
      */
     public function index()
@@ -62,8 +63,8 @@ class TicketsController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of indexNoAssignedByQueue
      * @param mixed $queueId
      * @return \Illuminate\Contracts\View\View
      */
@@ -103,8 +104,8 @@ class TicketsController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of indexAssigned
      * @return \Illuminate\Contracts\View\View
      */
     public function indexAssigned()
@@ -136,8 +137,8 @@ class TicketsController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of indexByQueue
      * @param mixed $queueId
      * @return \Illuminate\Contracts\View\View
      */
@@ -149,7 +150,6 @@ class TicketsController extends Controller
         if (!$user->queues->contains('id', $queueId)) {
             abort(403, 'No tienes acceso a esta cola.');
         }
-
         $tickets = Ticket::where('queue_id', $queueId)
             ->join('status', 'status.id', '=', 'tickets.status_id')
             ->join('priorities', 'priorities.id', '=', 'tickets.priority_id')
@@ -178,7 +178,8 @@ class TicketsController extends Controller
     }
 
     /**
-     *
+     * 
+     * Summary of view
      * @param \Illuminate\Http\Request $request
      * @param mixed $id
      * @return \Illuminate\Contracts\View\View
@@ -204,7 +205,6 @@ class TicketsController extends Controller
         if (empty($ticket)) {
             abort(404);
         }
-
         $requesterBy    = User::find($ticket->user_id);
         $createdBy      = User::find($ticket->created_by);
         $priorities     = Priority::where('active', true)->orderBy('id')->get();
@@ -219,7 +219,6 @@ class TicketsController extends Controller
             $user = User::find($agent->user_id);
             $agents[] = $user->toArray();
         }
-
         return view('tickets.view', [
             'title' => 'Ticket',
             'ticket' => $ticket,
@@ -236,6 +235,7 @@ class TicketsController extends Controller
     }
 
     /**
+     * 
      * Summary of create
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\View\View
@@ -243,8 +243,8 @@ class TicketsController extends Controller
     public function create(Request $request)
     {
         $priorities = Priority::where('active', true)->orderBy('id')->get();
-        $status = Status::where('active', true)->orderBy('id')->get();
-        $queues = Queue::where('active', true)->orderBy('id')->get();
+        $status     = Status::where('active', true)->orderBy('id')->get();
+        $queues     = Queue::where('active', true)->orderBy('id')->get();
         return view('tickets.add', [
             'title' => 'Nuevo Ticket',
             'priorities' => $priorities,
@@ -255,8 +255,10 @@ class TicketsController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of store
+     * @param \Illuminate\Http\Request $request
+     * @return bool|mixed|string|TicketsController|\Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -281,19 +283,19 @@ class TicketsController extends Controller
                 $messages['status'] = 'Estado no es válido.';
                 $messages['priority'] = 'Prioridad no es válida.';
             }
-            $validated = $request->validate($rules, $messages);
-            $config = HTMLPurifier_Config::createDefault();
-            $purifier = new HTMLPurifier($config);
-            $ticket = new Ticket();
-            $ticket->status_id = $request->input('status') || UtilHelper::globalKey('STATUS_OPEN');
-            $ticket->priority_id = $request->input('priority') || UtilHelper::globalKey('PRIORITY_HALF');
-            $ticket->user_id = $request->input('userId');
-            $ticket->queue_id = $request->input('queue');
-            $ticket->subject = $request->input('subject');
-            $ticket->message = $purifier->purify($request->input('message'));
-            $ticket->files = $request->input('files');
-            $ticket->created_by = Session::all()['id'];
-            $assigned_agent = empty($request->input('assigned_agent')) ? $request->input('assigned_agent') : null;
+            $validated              = $request->validate($rules, $messages);
+            $config                 = HTMLPurifier_Config::createDefault();
+            $purifier               = new HTMLPurifier($config);
+            $ticket                 = new Ticket();
+            $ticket->status_id      = $request->input('status') || UtilHelper::globalKey('STATUS_OPEN');
+            $ticket->priority_id    = $request->input('priority') || UtilHelper::globalKey('PRIORITY_HALF');
+            $ticket->user_id        = $request->input('userId');
+            $ticket->queue_id       = $request->input('queue');
+            $ticket->subject        = $request->input('subject');
+            $ticket->message        = $purifier->purify($request->input('message'));
+            $ticket->files          = $request->input('files');
+            $ticket->created_by     = Session::all()['id'];
+            $assigned_agent         = empty($request->input('assigned_agent')) ? $request->input('assigned_agent') : null;
             $ticket->assigned_agent = $assigned_agent;
             $ticket->save();
             Session::flash('message', 'Datos guardados!');
@@ -329,8 +331,10 @@ class TicketsController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of addMessage
+     * @param \Illuminate\Http\Request $request
+     * @return bool|mixed|string|TicketsController|\Illuminate\Http\JsonResponse
      */
     public function addMessage(Request $request)
     {
@@ -343,14 +347,14 @@ class TicketsController extends Controller
                 'ticket_id' => 'ID no es válido.',
                 'message'   => 'Mensaje no es válido.',
             ];
-            $validated = $request->validate($rules, $messages);
-            $config = HTMLPurifier_Config::createDefault();
-            $purifier = new HTMLPurifier($config);
-            $ticket = new TicketMessage();
-            $ticket->ticket_id = $request->input('ticket_id');
+            $validated          = $request->validate($rules, $messages);
+            $config             = HTMLPurifier_Config::createDefault();
+            $purifier           = new HTMLPurifier($config);
+            $ticket             = new TicketMessage();
+            $ticket->ticket_id  = $request->input('ticket_id');
             $ticket->created_by = Session::all()['id'];
-            $ticket->message = $purifier->purify($request->input('message'));
-            $ticket->files = $request->input('files');
+            $ticket->message    = $purifier->purify($request->input('message'));
+            $ticket->files      = $request->input('files');
             $ticket->save();
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request, 'ADD|OK|TICKETMESSAGE:' . $ticket->id);
@@ -385,9 +389,10 @@ class TicketsController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of update
      * @param \Illuminate\Http\Request $request
+     * @return bool|mixed|string|TicketsController|\Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
@@ -409,11 +414,11 @@ class TicketsController extends Controller
                 abort(404);
             }
 
-            $old_status_id = $ticket->status_id;
-            $new_status_id = $request->input('status');
+            $old_status_id          = $ticket->status_id;
+            $new_status_id          = $request->input('status');
             $ticket->assigned_agent = $request->input('assigned_agent');
-            $ticket->status_id = $request->input('status');
-            $ticket->priority_id = $request->input('priority');
+            $ticket->status_id      = $request->input('status');
+            $ticket->priority_id    = $request->input('priority');
             $ticket->save();
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request, 'UPDATE|OK|TICKET:' . $ticket->id);
@@ -454,7 +459,8 @@ class TicketsController extends Controller
     }
 
     /**
-     *
+     * 
+     * Summary of downloadFile
      * @param \Illuminate\Http\Request $request
      * @param mixed $type
      * @param mixed $id
@@ -505,13 +511,15 @@ class TicketsController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of userSearch
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function userSearch(Request $request)
     {
-        $term = $request->input('term');
-        $results = User::where('active', true)
+        $term       = $request->input('term');
+        $results    = User::where('active', true)
             ->where('name', 'ILIKE', '%' . $term . '%')
             ->take(10)
             ->get(['id', 'name']);
@@ -526,14 +534,16 @@ class TicketsController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of agentQueue
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function agentQueue(Request $request)
     {
-        $id = $request->input('queue_id');
-        $agentsIS = QueueUser::where('queue_id', '=', $id)->get();
-        $agents = [];
+        $id         = $request->input('queue_id');
+        $agentsIS   = QueueUser::where('queue_id', '=', $id)->get();
+        $agents     = [];
         foreach ($agentsIS as $agent) {
             $user = User::find($agent->user_id);
             $agents[] = [
@@ -545,7 +555,9 @@ class TicketsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 
+     * Summary of addUserForm
+     * @return \Illuminate\Contracts\View\View
      */
     public function addUserForm()
     {
@@ -555,13 +567,16 @@ class TicketsController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of addUser
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|string|TicketsController|\Illuminate\Http\JsonResponse
      */
     public function addUser(Request $request)
     {
-        $role_id = UtilHelper::globalKey('ROLE_AGENT');
-        $roles = Session::all()['roles'];
+        $role_id    = UtilHelper::globalKey('ROLE_AGENT');
+        $roles      = Session::all()['roles'];
         if (!in_array($role_id, $roles)) {
             abort(401);
         }
@@ -571,17 +586,17 @@ class TicketsController extends Controller
             $request->request->add(['login' => $emailArray[0]]);
             $validated = $request->validate(
                 [
-                    'name' => ['required'],
-                    'rut' => ['unique:App\Models\User,rut', new RutRule()],
+                    'name'  => ['required'],
+                    'rut'   => ['unique:App\Models\User,rut', new RutRule()],
                     'email' => ['unique:App\Models\User,email', 'required'],
                     'login' => ['unique:App\Models\User,login', 'required'],
                 ],
                 [
-                    'name' => 'Nombre no es válido.',
-                    'rut.unique' => 'R.U.T. existe.',
-                    'email.unique' => 'Email existe.',
-                    'login.required' => 'Usuario no es válido.',
-                    'login.unique' => 'Nombre Usuario existe.',
+                    'name'          => 'Nombre no es válido.',
+                    'rut.unique'    => 'R.U.T. existe.',
+                    'email.unique'  => 'Email existe.',
+                    'login.required'=> 'Usuario no es válido.',
+                    'login.unique'  => 'Nombre Usuario existe.',
                 ],
             );
             $rut = preg_replace('/\./', '', $request->input('rut'));
@@ -598,14 +613,14 @@ class TicketsController extends Controller
             $user->save();
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request, 'ADD|OK|USER:' . $user->id);
-             $type = TypeNotification::where('type', 'ADMIN')->first();
-                Notification::create([
-                    'type_notification_id'  => $type->id,
-                    'register_id'           => $user->id,
-                    'sent'                  => false,
-                    'execute'               => false,
-                    'contents'              => 'Nuevo Usuario'
-                ]);
+            $type = TypeNotification::where('type', 'ADMIN')->first();
+            Notification::create([
+                'type_notification_id'  => $type->id,
+                'register_id'           => $user->id,
+                'sent'                  => false,
+                'execute'               => false,
+                'contents'              => 'Nuevo Usuario: ' . $user->name
+            ]);
             return response()->json(
                 [
                     'success' => 'ok',
@@ -629,7 +644,8 @@ class TicketsController extends Controller
     }
 
     /**
-     *
+     * 
+     * Summary of uploadFile
      * @param \Illuminate\Http\Request $request
      * @throws \Exception
      * @return mixed|\Illuminate\Http\JsonResponse
@@ -639,12 +655,12 @@ class TicketsController extends Controller
         try {
             $request->validate(
                 [
-                    'file' => 'required|file|max:2048', // 2048 KB = 2 MB
+                    'file'  => 'required|file|max:2048', // 2048 KB = 2 MB
                 ],
                 [
                     'file.required' => 'Archivo no valido.',
-                    'file.file' => 'Archivo no válido.',
-                    'file.max' => 'Archivo no debe superar los 2 MB.',
+                    'file.file'     => 'Archivo no válido.',
+                    'file.max'      => 'Archivo no debe superar los 2 MB.',
                 ],
             );
             $pathTmp = storage_path() . '/app/tmp/';
@@ -653,11 +669,11 @@ class TicketsController extends Controller
                     throw new Exception('Directorio temporal no disponible.');
                 }
             }
-            $file = $request->file('file');
-            $fileName = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
-            $fileType = $request->input('type');
-            $fileType = explode(',', $fileType);
+            $file       = $request->file('file');
+            $fileName   = $file->getClientOriginalName();
+            $extension  = $file->getClientOriginalExtension();
+            $fileType   = $request->input('type');
+            $fileType   = explode(',', $fileType);
             if (!in_array($extension, $fileType)) {
                 throw new Exception('Extensión del archivo no valido.');
             }
@@ -670,10 +686,10 @@ class TicketsController extends Controller
             LoggerHelper::add($request, 'ADD|OK|FILE:' . basename($newFileName));
             $sizeInMB = round($file->getSize() / (1024 * 1024), 2);
             $data = [
-                'fileOriginalName' => $file->getClientOriginalName(),
-                'fileName' => $newFileName,
-                'size' => $sizeInMB,
-                'name' => $file->getClientOriginalName() . ' (' . $sizeInMB . 'MB)',
+                'fileOriginalName'  => $file->getClientOriginalName(),
+                'fileName'          => $newFileName,
+                'size'              => $sizeInMB,
+                'name'              => $file->getClientOriginalName() . ' (' . $sizeInMB . 'MB)',
             ];
             return response()->json(['success' => 'ok', 'data' => $data]);
         } catch (Exception $e) {

@@ -15,7 +15,9 @@ class DashboardController extends Controller
 
     /**
      * 
-     * 
+     * Summary of index
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\RedirectResponse
      */
     public function index(Request $request)
     {

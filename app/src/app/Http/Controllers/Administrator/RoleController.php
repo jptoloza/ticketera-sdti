@@ -20,7 +20,9 @@ class RoleController extends Controller
     use ResponseTrait;
 
     /**
-     * Display a listing of the resource.
+     * 
+     * Summary of index
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -30,6 +32,11 @@ class RoleController extends Controller
         ]);
     }
 
+    /**
+     * 
+     * Summary of get
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function get()
     {
         $roles = Role::select('id', 'role', 'global_key', 'active')->orderBy('id')->get();
@@ -49,7 +56,9 @@ class RoleController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     *
+     * Summary of create
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -60,7 +69,11 @@ class RoleController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     *
+     * Summary of store
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|RoleController|string|\Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -74,11 +87,8 @@ class RoleController extends Controller
                 'global_key'        => 'Global Key no es válido.',
                 'active'            => 'Activo no es válido.',
             ]);
-
-
             $name = mb_convert_case($request->input('name'), MB_CASE_UPPER);
             $global_key = mb_convert_case($request->input('global_key'), MB_CASE_UPPER);
-
             $role = Role::where('role', $name)
                 ->where('global_key', $global_key)->first();
             if ($role) {
@@ -89,7 +99,6 @@ class RoleController extends Controller
             $role->global_key   = $global_key;
             $role->active       = (int) $request->input('active') == 1 ? true : false;
             $role->save();
-
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request,  'ADD|OK|ROL:' . $role->id);
             return response()->json([
@@ -108,10 +117,11 @@ class RoleController extends Controller
         }
     }
 
-
-
     /**
-     * Show the form for editing the specified resource.
+     *
+     * Summary of edit
+     * @param string $id
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit(string $id)
     {
@@ -127,23 +137,26 @@ class RoleController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     *
+     * Summary of update
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|RoleController|string|\Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
         try {
             $validated = $request->validate([
-                'id'       => ['required'],
-                'name'     => ['required'],
-                'global_key'     => ['required'],
-                'active'   => 'required',
+                'id'        => ['required'],
+                'name'      => ['required'],
+                'global_key'=> ['required'],
+                'active'    => 'required',
             ], [
-                'id'       => 'ID no es válido',
-                'name'     => 'Nombre no es válido.',
-                'global_key'        => 'Global Key no es válido.',
-                'active'   => 'Usuario Activo no es válido.',
+                'id'        => 'ID no es válido',
+                'name'      => 'Nombre no es válido.',
+                'global_key'=> 'Global Key no es válido.',
+                'active'    => 'Usuario Activo no es válido.',
             ]);
-
             $name     = mb_convert_case($request->input('name'), MB_CASE_UPPER);
             $global_key = mb_convert_case($request->input('global_key'), MB_CASE_UPPER);
             $role = Role::find($request->input('id'));
@@ -163,7 +176,6 @@ class RoleController extends Controller
             $role->global_key = mb_convert_case($request->input('global_key'), MB_CASE_UPPER);
             $role->active   = (int) $request->input('active') == 1 ? true : false;
             $role->save();
-
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request,  'UPDATE|OK|ROL:' . $role->id);
             return response()->json([
@@ -183,7 +195,12 @@ class RoleController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     *
+     * Summary of destroy
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @throws \Exception
+     * @return bool|mixed|RoleController|string|\Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, $id = null)
     {
@@ -211,11 +228,12 @@ class RoleController extends Controller
         }
     }
 
-
-
     /**
-     * 
-      
+     *
+     * Summary of users
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @return \Illuminate\Contracts\View\View
      */
     public function users(Request $request, $id = null)
     {
@@ -231,7 +249,6 @@ class RoleController extends Controller
             ->where('B.active', '=', true)
             ->orderBy('A.name', 'asc')
             ->get();
-
         $data = [];
         foreach ($userRoles as $value) {
             $_data = UtilHelper::ucTexto($value->name) . ' ( ' . $value->email . ' / ' . $value->rut . ' )';
@@ -253,13 +270,12 @@ class RoleController extends Controller
         ]);
     }
 
-
-
-
-
     /**
-     * 
-     * 
+     *
+     * Summary of addUser
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|RoleController|string|\Illuminate\Http\JsonResponse
      */
     public function addUser(Request $request)
     {
@@ -304,10 +320,13 @@ class RoleController extends Controller
         }
     }
 
-
     /**
-     * 
-     * 
+     *
+     * Summary of deleteUser
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @throws \Exception
+     * @return bool|mixed|RoleController|string|\Illuminate\Http\JsonResponse
      */
     public function deleteUser(Request $request, $id = 0)
     {

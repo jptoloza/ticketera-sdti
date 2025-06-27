@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Administrator;
 
 use \Exception;
-use App\Models\Role;
 use App\Models\User;
 use App\Models\Queue;
 use App\Models\QueueUser;
@@ -12,7 +11,6 @@ use Illuminate\Http\Request;
 use App\Http\Helpers\UtilHelper;
 use App\Http\Helpers\LoggerHelper;
 use App\Http\Traits\ResponseTrait;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
@@ -22,7 +20,9 @@ class QueuesController extends Controller
     use ResponseTrait;
 
     /**
-     * Display a listing of the resource.
+     * 
+     * Summary of index
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -32,6 +32,11 @@ class QueuesController extends Controller
         ]);
     }
 
+    /**
+     * 
+     * Summary of get
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function get()
     {
         $queues = Queue::select('id', 'queue', 'active')->orderBy('id')->get();
@@ -50,7 +55,9 @@ class QueuesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 
+     * Summary of create
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -61,24 +68,26 @@ class QueuesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 
+     * Summary of store
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|QueuesController|string|\Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         try {
             $validated = $request->validate([
-                'name'              => ['required'],
-                'active'            => 'required',
+                'name'      => ['required'],
+                'active'    => 'required',
             ], [
-                'name'              => 'Nombre no es válido.',
-                'active'            => 'Usuario Activo no es válido.',
+                'name'      => 'Nombre no es válido.',
+                'active'    => 'Usuario Activo no es válido.',
             ]);
-
             $queue = Queue::where('queue', '=', $request->input('name'))->first();
             if ($queue) {
                 throw new Exception('Rol registrado anteriormente.');
             }
-
             $queue = Queue::withTrashed()->where('queue', '=', $request->input('name'))->first();
             if ($queue) {
                 $queue->restore();
@@ -106,10 +115,11 @@ class QueuesController extends Controller
         }
     }
 
-
-
     /**
-     * Show the form for editing the specified resource.
+     * 
+     * Summary of edit
+     * @param string $id
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit(string $id)
     {
@@ -118,14 +128,18 @@ class QueuesController extends Controller
             abort(404);
         }
         return view('administrator.queues.edit', [
-            'title'       => 'Colas',
-            'queue'        => $queue,
-            'ajaxUpdate'  => Jquery::ajaxPost('actionForm', '/admin/queues')
+            'title'     => 'Colas',
+            'queue'     => $queue,
+            'ajaxUpdate'=> Jquery::ajaxPost('actionForm', '/admin/queues')
         ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * 
+     * Summary of update
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|QueuesController|string|\Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
@@ -139,7 +153,6 @@ class QueuesController extends Controller
                 'name'     => 'Nombre no es válido.',
                 'active'   => 'Usuario Activo no es válido.',
             ]);
-
             $queue = Queue::find($request->input('id'));
             if (!$queue) {
                 throw new Exception('Rol no registrado.');
@@ -175,7 +188,12 @@ class QueuesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     *
+     * Summary of destroy
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @throws \Exception
+     * @return bool|mixed|QueuesController|string|\Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, $id = null)
     {
@@ -204,8 +222,11 @@ class QueuesController extends Controller
     }
 
     /**
-     * 
-      
+     *
+     * Summary of users
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @return \Illuminate\Contracts\View\View
      */
     public function users(Request $request, $id = null)
     {
@@ -228,25 +249,15 @@ class QueuesController extends Controller
             $data[$value->id] = $_data;
         }
         $dataUsers = [];
-
-
-        $adminRoleId = UtilHelper::globalKey('ROLE_ADMINISTRATOR');
-        $managerRoleId = UtilHelper::globalKey('ROLE_MANAGERR');
-        $agentRoleId = UtilHelper::globalKey('ROLE_AGENT');
-
-
         $assignedUserIds = QueueUser::where('queue_id', $queue->id)
             ->pluck('user_id')
             ->toArray();
         $users = User::join('user_roles', 'users.id', '=', 'user_roles.user_id')
             ->where('users.active', true)
             ->where(function ($query) {
-
                 $adminRoleId = UtilHelper::globalKey('ROLE_ADMINISTRATOR');
                 $managerRoleId = UtilHelper::globalKey('ROLE_MANAGER');
                 $agentRoleId = UtilHelper::globalKey('ROLE_AGENT');
-
-
                 $query->where('user_roles.role_id', '=', $agentRoleId)
                     ->orWhere('user_roles.role_id', '=', $adminRoleId)
                     ->orWhere('user_roles.role_id', '=', $managerRoleId);
@@ -255,7 +266,6 @@ class QueuesController extends Controller
             ->select('users.*')
             ->orderBy('users.name', 'asc')
             ->get();
-
         foreach ($users as $user) {
             $dataUsers[$user->id] = UtilHelper::ucTexto($user->name) . ' ( ' . $user->email . ' / ' . $user->rut . ' )';
         }
@@ -271,19 +281,21 @@ class QueuesController extends Controller
 
     /**
      * 
-     * 
+     * Summary of addUser
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|QueuesController|string|\Illuminate\Http\JsonResponse
      */
     public function addUser(Request $request)
     {
         try {
             $validated = $request->validate([
-                'queue_id' => ['required'],
-                'user_id' => ['required'],
+                'queue_id'  => ['required'],
+                'user_id'   => ['required'],
             ], [
-                'queue_id' => 'Cola ID no es valido',
-                'user_id' => 'Usuario no es valido.',
+                'queue_id'  => 'Cola ID no es valido',
+                'user_id'   => 'Usuario no es valido.',
             ]);
-
             $userQueue = QueueUser::where('user_id', $request->input('user_id'))
                 ->where('queue_id',  $request->input('queue_id'))->first();
             if ($userQueue) {
@@ -294,9 +306,9 @@ class QueuesController extends Controller
             if ($userQueue) {
                 $userQueue->restore();
             } else {
-                $userQueue = new QueueUser();
-                $userQueue->queue_id = $request->input('queue_id');
-                $userQueue->user_id = $request->input('user_id');
+                $userQueue              = new QueueUser();
+                $userQueue->queue_id    = $request->input('queue_id');
+                $userQueue->user_id     = $request->input('user_id');
                 $userQueue->save();
             }
             Session::flash('message', 'Datos guardados!');
@@ -317,10 +329,13 @@ class QueuesController extends Controller
         }
     }
 
-
     /**
-     * 
-     * 
+     *
+     * Summary of deleteUser
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @throws \Exception
+     * @return bool|mixed|QueuesController|string|\Illuminate\Http\JsonResponse
      */
     public function deleteUser(Request $request, $id = 0)
     {

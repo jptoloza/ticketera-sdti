@@ -18,7 +18,9 @@ class UnitsController extends Controller
     use ResponseTrait;
 
     /**
-     * Display a listing of the resource.
+     * 
+     * Summary of index
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -30,13 +32,13 @@ class UnitsController extends Controller
 
     /**
      * 
+     * Summary of get
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function get()
     {
         $status = Unit::select('id', 'code', 'unit', 'active', 'validate')->orderBy('id')->get();
         $data = [];
-
         foreach ($status as $statu) {
             $link   = '
                 <a href="/admin/units/edit/' . $statu->id . '" title="Editar"><span class="uc-icon">edit</span></a>&nbsp;&nbsp;
@@ -53,7 +55,9 @@ class UnitsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 
+     * Summary of create
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -63,9 +67,12 @@ class UnitsController extends Controller
         ]);
     }
 
-
     /**
-     * Store a newly created resource in storage.
+     * 
+     * Summary of store
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|string|UnitsController|\Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -79,14 +86,12 @@ class UnitsController extends Controller
                 'validate'  => 'Validado no es válido.',
                 'active'    => 'Activo no es válido.',
             ]);
-
             $code   = $request->input('code') ?? 0;
             $name   = mb_convert_case($request->input('name'), MB_CASE_UPPER);
             $unit = Unit::where('unit', $name)->first();
             if ($unit) {
                 throw new Exception('Unidad registrada anteriormente.');
             }
-
             $unit = Unit::withTrashed()->where('unit', $name)->first();
             if ($unit) {
                 $unit->restore();
@@ -117,7 +122,10 @@ class UnitsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 
+     * Summary of edit
+     * @param string $id
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit(string $id)
     {
@@ -133,23 +141,26 @@ class UnitsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 
+     * Summary of update
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|string|UnitsController|\Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
         try {
             $validated = $request->validate([
                 'id'        => ['required'],
-                'name'     => ['required'],
+                'name'      => ['required'],
                 'validate'  => 'required',
                 'active'    => 'required',
             ], [
                 'id'        => 'ID no es válido',
-                'name'     => 'Nombre no es válido.',
+                'name'      => 'Nombre no es válido.',
                 'validate'  => 'Validado no es válido.',
                 'active'    => 'Activo no es válido.',
             ]);
-
             $code   = $request->input('code') ?? 0;
             $name   = mb_convert_case($request->input('name'), MB_CASE_UPPER);
             $unit = Unit::find($request->input('id'));
@@ -170,7 +181,6 @@ class UnitsController extends Controller
             $unit->validate = (int) $request->input('validate') == 1 ? true : false;
             $unit->active     = (int) $request->input('active') == 1 ? true : false;
             $unit->save();
-
             Session::flash('message', 'Datos guardados!');
             LoggerHelper::add($request,  'UPDATE|OK|UNIT:' . $unit->id);
             return response()->json([
@@ -191,7 +201,11 @@ class UnitsController extends Controller
 
     /**
      * 
-     * Remove the specified resource from storage.
+     * Summary of destroy
+     * @param \Illuminate\Http\Request $request
+     * @param string $id
+     * @throws \Exception
+     * @return bool|mixed|string|UnitsController|\Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, string $id)
     {

@@ -10,7 +10,7 @@
           <td class="p-20">
             <div class="container-main">
               Hola <b>{{ App\Http\Helpers\UtilHelper::ucTexto($content->user->name) }}</b>,
-              se ha creado un nuevo mensaje en la conversción del ticket #{{ $content->ticket->id }}.
+              se ha cambiado el estado del del ticket #{{ $content->ticket->id }}.
               <br />
             </div>
 
@@ -20,11 +20,6 @@
                         <td>Asunto</td>
                         <td>:</td>
                         <td><b>{{ $content->ticket->subject }}</b></td>
-                    </tr>
-                    <tr>
-                        <td>Creado por</td>
-                        <td>:</td>
-                        <td><b>{{ App\Http\Helpers\UtilHelper::ucTexto($content->created_by->name) }}</b></td>
                     </tr>
                     <tr>
                         <td>Equipo</td>

@@ -19,8 +19,11 @@ use Illuminate\Validation\ValidationException;
 class UserController extends Controller
 {
     use ResponseTrait;
+
     /**
-     * Display a listing of the resource.
+     * 
+     * Summary of index
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -32,6 +35,7 @@ class UserController extends Controller
 
     /**
      * 
+     * Summary of get
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function get()
@@ -57,7 +61,9 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 
+     * Summary of create
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -68,7 +74,11 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 
+     * Summary of store
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|string|UserController|\Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -130,7 +140,10 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 
+     * Summary of edit
+     * @param string $id
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit(string $id)
     {
@@ -147,7 +160,11 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 
+     * Summary of update
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return bool|mixed|string|UserController|\Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
@@ -175,7 +192,6 @@ class UserController extends Controller
                 'profile.array'     => 'Perfil no seleccionado.',
                 'active'            => 'Usuario Activo no es válido.',
             ]);
-
             $rut = preg_replace("/\./", "", $request->input('rut'));
             $user = User::find($request->input('id'));
             if (!$user) {
@@ -184,7 +200,6 @@ class UserController extends Controller
             $users = User::where('email', '=', $request->input('email'))
                 ->orWhere('login', '=', $request->input('login'))
                 ->orWhere('rut', '=', $rut);
-
             if ($users->count() > 0) {
                 foreach ($users->get() as $uuser) {
                     $uuser = (object)$uuser;
@@ -221,7 +236,12 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 
+     * Summary of destroy
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @throws \Exception
+     * @return bool|mixed|string|UserController|\Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, $id = 0)
     {

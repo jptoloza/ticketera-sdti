@@ -30,7 +30,9 @@ class LoginController extends Controller
     use ResponseTrait;
 
     /**
-     *
+     * 
+     * Summary of __construct
+     * @param \Illuminate\Http\Request $request
      */
     public function __construct(Request $request)
     {
@@ -42,10 +44,11 @@ class LoginController extends Controller
         }
     }
 
-
     /**
      * 
-     * 
+     * Summary of index
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function index(Request $request)
     {
@@ -57,8 +60,10 @@ class LoginController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of loginCAS
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function loginCAS(Request $request)
     {
@@ -92,7 +97,7 @@ class LoginController extends Controller
                         'register_id'           => $user->id,
                         'sent'                  => false,
                         'execute'               => false,
-                        'contents'              => 'Nuevo Usuario'
+                        'contents'              => 'Nuevo Usuario: ' . $user->name
                     ]);
                 } else {
                     if (!is_null($user->deleted_at) || $user->active == false) {
@@ -115,8 +120,10 @@ class LoginController extends Controller
     }
 
     /**
-     *
-     *
+     * 
+     * Summary of logout
+     * @param \Illuminate\Http\Request $request
+     * @return void
      */
     public function logout(Request $request)
     {
@@ -125,9 +132,12 @@ class LoginController extends Controller
         phpCAS::logout();
     }
 
-
-
-
+    /**
+     * 
+     * Summary of registerFormCAS
+     * @param string $id
+     * @return \Illuminate\Contracts\View\View
+     */
     public function registerFormCAS(string $id)
     {
         $user = User::find($id);
@@ -135,14 +145,10 @@ class LoginController extends Controller
             abort(404);
         }
         return view('administrator.users.edit', [
-            'title'     => 'Usuarios',
-            'user'      => $user,
-            'units'     => Unit::where('active', true)->get(),
-            'ajaxUpdate' => Jquery::ajaxPost('actionForm', '/admin/users')
+            'title'         => 'Usuarios',
+            'user'          => $user,
+            'units'         => Unit::where('active', true)->get(),
+            'ajaxUpdate'    => Jquery::ajaxPost('actionForm', '/admin/users')
         ]);
     }
-
-
-
-    public function registerCAS($request) {}
 }
