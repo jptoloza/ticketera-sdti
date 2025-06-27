@@ -14,7 +14,7 @@ return new class extends Migration
         //
         Schema::table('status', function (Blueprint $table) {
             //
-            $table->unique('queue');
+            $table->unique('global_key');
         });
     }
 
