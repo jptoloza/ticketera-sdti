@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         //
-        Schema::table('queues', function (Blueprint $table) {
+        Schema::table('status', function (Blueprint $table) {
             //
             $table->unique('queue');
         });
