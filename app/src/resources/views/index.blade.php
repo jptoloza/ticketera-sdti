@@ -30,6 +30,7 @@
         integrity="sha384-d3UHjPdzJkZuk5H3qKYMLRyWLAQBJbby2yr2Q58hXXtAGF8RSNO9jpLDlKKPv5v3"
         crossorigin="anonymous"></script>
     <script src="/assets/js/jquery.form.js"></script>
+
     <!--  -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
     <link rel="stylesheet"
@@ -38,6 +39,11 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/v/dt/dt-2.1.0/datatables.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://kit-digital-uc-prod.s3.amazonaws.com/uc-kitdigital/css/uc-kitdigital.css" />
+
+    <!-- #Css style -->
+    <link href="/assets/css/loading.css" rel="stylesheet" />
+
+
 </head>
 
 <body>
@@ -65,7 +71,7 @@
             <div class="uc-navbar_mobile d-block d-lg-none">
                 <div class="uc-navbar_mobile-bar navbar-brand">
                     <div class="uc-navbar_mobile-logo navbar-light">
-                        <div class="h2 text-font--serif text-color--blue">Mesa de Servicios Tecnológicos SDTI/DTFD</div>
+                        <div class="h2 text-font--serif text-color--blue">Mesa de Servicios SDTI</div>
                     </div>
                 </div>
             </div>
@@ -87,14 +93,21 @@
                     <div class="mb-3 text-start">
                         <label for="cuentaUc" class="form-label">Ingrese con su cuenta UC para iniciar sesión o
                             registrarse</label>
-<!--                        <input type="text" class="form-control" id="cuentaUc" placeholder="usuario sin @uc.cl"
+                        <!--                        <input type="text" class="form-control" id="cuentaUc" placeholder="usuario sin @uc.cl"
                             required>-->
                     </div>
 
                     <a href="/cas/login" class="uc-btn btn-secondary text-center w-100">
-                        Iniciar Sesión
+                        Iniciar Sesión SSO CAS UC
                         <i class="uc-icon icon-shape--rounded">arrow_forward</i>
                     </a>
+
+                    <a href="javascript:void(0)" class="mt-2 uc-btn btn-secondary text-center w-100"
+                        data-bs-toggle="modal" data-bs-target="#login-signin">
+                        Iniciar Sesión con Email
+                        <i class="uc-icon icon-shape--rounded">arrow_forward</i>
+                    </a>
+
                 </div>
             </div>
 
@@ -142,6 +155,253 @@
         </div>
     </div>
 
+
+    <div id="login-signin" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="actionForm" id="actionForm" action="{{ route('login_email') }}" method="POST">
+                    @csrf
+                    <div class="uc-message info" style="box-shadow:none !important">
+                        <a href="#" class="uc-message_close-button" data-bs-dismiss="modal"><i
+                                class="uc-icon">close</i></a>
+                        <div class="uc-message_body" style="">
+                            <h2 class="mb-24">
+                                <i class="uc-icon warning-icon uc-icon-modal">login</i> Iniciar Sesión con Email
+                            </h2>
+                            <div class="uc-form-group">
+                                <label>Email UC</label>
+                                <input type="email" name="email" id="email" class="uc-input-style" value=""
+                                    placeholder="Ingrese email UC" required />
+                            </div>
+                            <div id="error-flash" style="display:none">
+                                <div class="uc-alert error mb-12" style="display:block">
+                                    <div class="flex d-flex justify-content-between">
+                                        <div class="uc-alert_content">
+                                            <i class="uc-icon icon-size--sm">cancel</i> Error.
+                                        </div>
+                                        <div>
+                                            <div class="uc-alert_close" data-id="error-flash" style="cursor: pointer;">
+                                                <i class="uc-icon icon-size--sm">close</i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div style="display:block; width: 100% !important">
+                                        <span class="p p-size--sm bold" id="error-flash-message"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer modal-footer-confirm">
+                        <button type="submit" class="uc-btn btn-secondary">Continuar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div id="login-signin-code" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="actionFormLogin" id="actionFormLogin" action="{{ route('login_email_validate') }}"
+                    method="POST">
+                    @csrf
+                    <input type="hidden" name="user" id="user" value="" required />
+
+                    <div class="uc-message info" style="box-shadow:none !important">
+                        <a href="#" class="uc-message_close-button" data-bs-dismiss="modal"><i
+                                class="uc-icon">close</i></a>
+                        <div class="uc-message_body" style="">
+                            <h2 class="mb-24">
+                                <i class="uc-icon warning-icon uc-icon-modal">login</i> Iniciar Sesión con Email
+                            </h2>
+                            <p>
+                                Por favor ingrese el código de validación que hemos enviado a su correo electrónico.
+                            </p>
+                            <div class="uc-form-group">
+                                <label>Código de Validación</label>
+                                <input type="text" name="code" id="code" class="uc-input-style" value=""
+                                    placeholder="Ingrese código de valicación" required />
+                            </div>
+                            <div id="error-flash-login" style="display:none">
+                                <div class="uc-alert error mb-12" style="display:block">
+                                    <div class="flex d-flex justify-content-between">
+                                        <div class="uc-alert_content">
+                                            <i class="uc-icon icon-size--sm">cancel</i> Error.
+                                        </div>
+                                        <div>
+                                            <div class="uc-alert_close" data-id="error-flash-login"
+                                                style="cursor: pointer;">
+                                                <i class="uc-icon icon-size--sm">close</i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div style="display:block; width: 100% !important">
+                                        <span class="p p-size--sm bold" id="error-flash-message-login"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class="modal-footer modal-footer-confirm">
+                        <button type="submit" class="uc-btn btn-secondary">Continuar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <script type="text/javascript">
+        function start() {
+            $("#capaprogress").html(
+                `<img src="/assets/img/loading01.svg" style="width:25px"/> cargando`
+            );
+            $("#loading-super").css("width", $(document).width());
+            $("#loading-super").css("height", $(document).height());
+            $("#loading-super").show();
+            $("#loading-progress").show();
+        }
+        function stop() {
+            window.setTimeout(() => {
+                $("#capaprogress").empty();
+                $("#loading-super").hide();
+                $("#loading-progress").hide();
+            }, 1000);
+        }
+
+        $().ready(function () {
+            $(".uc-alert_close").click(function () {
+                console.log('click');
+                id = $(this).attr("data-id");
+                $("#" + id).hide("slow");
+            });
+
+            $('#actionForm').submit(function (e) {
+                e.preventDefault();
+                var response;
+                var msg;
+                var url;
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    timeout: 1200000,
+                    beforeSend: function () {
+                        start();
+                    },
+                    error: function (response) {
+                        let message = "Error desconocido";
+                        if (response.responseJSON) {
+                            message = response.responseJSON.message;
+                        } else if (response.statusText) {
+                            message = response.statusText;
+                        }
+                        $('#error-flash-message').html(message);
+                        $('#error-flash').show('slow');
+                    },
+                    success: function (response) {
+                        var response = response;
+                        try {
+                            if (response.success == 'ok') {
+                                $('#user').val($('#email').val());
+                                $('#email').val('');
+                                $('#login-signin').modal('hide');
+                                $('#login-signin-code').modal('show');
+                            } else {
+                                throw new Error();
+                            }
+                        } catch (e) {
+                            $('#error-flash-message').html(e);
+                            $('#error-flash').show('slow');
+                        }
+                    },
+                    complete: function () {
+                        stop();
+                    }
+                });
+                return false;
+            });
+
+
+
+            $('#actionFormLogin').submit(function (e) {
+                e.preventDefault();
+                var response;
+                var msg;
+                var url;
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    timeout: 1200000,
+                    beforeSend: function () {
+                        start();
+                    },
+                    error: function (response) {
+                        let url = '';
+                        let message = "Error desconocido";
+                        if (response.responseJSON) {
+                            message = response.responseJSON.message;
+                            if (response.responseJSON.url) {
+                                url = response.responseJSON.url;
+                            }
+                        } else if (response.statusText) {
+                            message = response.statusText;
+                        }
+                        if (url) {
+                            window.location = url;
+                        }
+                        $('#error-flash-message-login').html(message);
+                        $('#error-flash-login').show('slow');
+                    },
+                    success: function (response) {
+                        var response = response;
+                        try {
+                            if (response.success == 'ok') {
+                                url = `$page`;
+                                if (response.url) {
+                                    url = response.url
+                                }
+                                window.location.href = url;
+                            } else {
+                                throw new Error();
+                            }
+                        } catch (e) {
+                            $('#error-flash-message-login').html(e);
+                            $('#error-flash-login').show('slow');
+                        }
+                    },
+                    complete: function () {
+                        stop();
+                    }
+                });
+                return false;
+            });
+
+        });
+    </script>
+
+    <div id="loading-super"></div>
+    <div id="loading-progress">
+        <div id="capaprogress" class="cprogress"></div>
+    </div>
 </body>
 
 </html>

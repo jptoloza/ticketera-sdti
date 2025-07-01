@@ -45,7 +45,7 @@
                     </li>
                     <li>
                         <a href="{{ route('admin_queues') }}" class="uc-btn btn-listed">
-                            Colas
+                            Equipos
                             <i class="uc-icon icon-small">chevron_right</i>
                         </a>
                     </li>

@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
-        Schema::table('units', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //
-            $table->unique('unit');
+            $table->text('code')->nullable();
         });
     }
 
@@ -23,10 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
-        Schema::table('units', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //
-            $table->dropUnique(['unit']);
+            $table->dropUnique(['code']);
         });
     }
 };

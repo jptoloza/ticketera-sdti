@@ -58,15 +58,12 @@
     <link href="/assets/css/app.css" rel="stylesheet" />
     <script src="/assets/js/app.js"></script>
 
-
   </head>
 
   <body>
     <!-- Header -->
     <h1 class="uc-sr-only">[Mesa de Serivios SDTI]</h1>
     @include('layout.header')
-
-
 
     <!-- Contenido Principal -->
     <div class="content-wrapper">
@@ -111,12 +108,9 @@
       @endphp
     @endif
 
-
     <div id="loading-super"></div>
     <div id="loading-progress">
       <div id="capaprogress" class="cprogress"></div>
     </div>
-
   </body>
-
 </html>

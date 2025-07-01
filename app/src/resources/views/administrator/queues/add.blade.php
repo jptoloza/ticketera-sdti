@@ -11,18 +11,18 @@
                 <a href="/admin">Herramientas Administrativas</a>
                 <i class="uc-icon">keyboard_arrow_right</i>
             </li>
-            <li class="uc-breadcrumb_item current bc-siga">Colas</li>
+            <li class="uc-breadcrumb_item current bc-siga">Equipos</li>
         </ol>
 
         <div class="d-flex align-items-center">
-            <h1>Colas</h1>
+            <h1>Equipos</h1>
             <span class="uc-heading-decoration"></span>
         </div>
 
 
         <div class="mt-2 bg-white p-2 border border-gray rounded-1">
             <div class="p-2 p-size--lg">
-                Esta sección permite administrar la información base de las Colas de usuarios del sistema, facilitando un
+                Esta sección permite administrar la información base de los Equipos de trabajo del sistema, facilitando un
                 registro
                 claro y organizado.
             </div>
@@ -42,19 +42,19 @@
             <div class="mx-2">
                 <form name="actionForm" id="actionForm" method="POST" action="{{ route('admin_queues_add') }}">
                     @csrf
-                    <h4>Nueva Cola</h4>
+                    <h4>Nuevo Equipo</h4>
                     <div class="uc-text-divider divider-primary mt-16 mb-4"></div>
                     <div class="p-size--sm p-text--condensed p-color--gray mb-4 mt-2">
                         <span class="text-danger">*</span> Campo obligatorio.
                     </div>
                     <div class="uc-form-group">
-                        <label for="first_name">Nombre Cola <span class="text-danger">*</span></label>
-                        <input id="name" name="name" type="text" class="uc-input-style" placeholder="Ingrese nombre cola"
+                        <label for="first_name">Nombre Equipo <span class="text-danger">*</span></label>
+                        <input id="name" name="name" type="text" class="uc-input-style" placeholder="Ingrese nombre equipo"
                             required />
                     </div>
                     <div class="uc-form-group">
                         <div>
-                            <label for="active">Cola Activa <span class="text-danger">*</span></label>
+                            <label for="active">Equipo Activo <span class="text-danger">*</span></label>
                         </div>
                         <div>
                             <input type="radio" name="active" value="1" />

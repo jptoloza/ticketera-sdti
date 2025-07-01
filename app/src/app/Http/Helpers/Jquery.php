@@ -31,7 +31,6 @@ class Jquery
             start();
         },
         error   : function(response){   
-          console.log(response); 
           let message = "Error desconocido";
           if (response.responseJSON) {
             message = response.responseJSON.message;
@@ -42,7 +41,6 @@ class Jquery
           $('#error-flash').show('slow');
         },
         success : function(response){
-          console.log(response); 
           var response = response;
           try{
             if (response.success=='ok'){
@@ -95,13 +93,11 @@ EOD;
             start();
         },
         error   : function(response){   
-          console.log(response); 
           const message = response.responseJSON.message || response.statusText;
           $('#$div-message').html(message);
           $('#$div').show('slow');
         },
         success : function(response){
-          console.log(response); 
           var response = response;
           try{
             if (response.success=='ok'){
@@ -147,9 +143,6 @@ EOD;
       } else {
         $('#$input').val(quill.root.innerHTML);
       }
-
-
-      
       var response;
       var msg;
       var url;
@@ -162,13 +155,11 @@ EOD;
             start();
         },
         error   : function(response){
-          console.log(response); 
           const message = response.responseJSON.message || response.statusText;
           $('#error-flash-message').html(message);
           $('#error-flash').show('slow');
         },
-        success : function(response){
-          console.log(response); 
+        success : function(response){ 
           var response = response;
           try{
             if (response.success=='ok'){
@@ -326,7 +317,6 @@ EOD;
                 start();
             },
             error   : function(xhr, status, error){   
-              console.log(xhr); 
               $('#error-flash-message').html(xhr.responseJSON.message || xhr.statusText);
               $('#error-flash').show('slow');
               $('#ok-flash').hide();
@@ -334,7 +324,6 @@ EOD;
             success : function(response){ 
               try{
                 if (response.success == 'ok'){
-                  console.log(response.url)
                   // Actualizar valores de los inputs con los datos recibidos
                   $('#ok-flash input[name="folio"]').val(response.data.invoice);
                   $('#ok-flash input[name="tipo"]').val(response.data.type_card);

@@ -47,11 +47,15 @@ class EmailNotification extends Mailable
                 $subject = '[SDTI-Ticket #' . $this->content->ticket->id . '] RE:' . $this->content->ticket->subject;
                 break;
 
+            case 'CODE':
+                $subject = '[SDTI-Ticket] Inicio de Sesipin';
+                break;
+
             default:
                 $subject = '[SDTI-ADMIN]';
                 break;
         }
-        
+
         return new Envelope(
             subject: $subject,
         );
@@ -74,6 +78,10 @@ class EmailNotification extends Mailable
 
             case 'CHANGE_STATUS':
                 $template = 'emails.change_status';
+                break;
+
+            case 'CODE':
+                $template = 'emails.code';
                 break;
 
             default:

@@ -14,7 +14,7 @@
               <p>Al parecer no cuentas con los permisos correspondientes para ingresar al sitio, favor contactarse con la
                 administracion.</p>
               <a href="/logout" class="uc-link text-weight--medium">
-                Volver a la página de inicio <i class="uc-icon">keyboard_arrow_right</i>
+                Cerrar sesión <i class="uc-icon">keyboard_arrow_right</i>
               </a>
             </div>
           </div>

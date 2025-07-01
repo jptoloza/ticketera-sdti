@@ -27,8 +27,8 @@ class QueuesController extends Controller
     public function index()
     {
         return view('administrator.queues.index', [
-            'title'   => 'Colas',
-            'ajaxGet' => Jquery::ajaxGet('url', '/admin/queue')
+            'title'   => 'Equipos',
+            'ajaxGet' => Jquery::ajaxGet('url', '/admin/queues')
         ]);
     }
 
@@ -62,7 +62,7 @@ class QueuesController extends Controller
     public function create()
     {
         return view('administrator.queues.add', [
-            'title'   => 'Colas',
+            'title'   => 'Equipos',
             'ajaxAdd' => Jquery::ajaxPost('actionForm', '/admin/queues')
         ]);
     }
@@ -128,7 +128,7 @@ class QueuesController extends Controller
             abort(404);
         }
         return view('administrator.queues.edit', [
-            'title'     => 'Colas',
+            'title'     => 'Equipos',
             'queue'     => $queue,
             'ajaxUpdate'=> Jquery::ajaxPost('actionForm', '/admin/queues')
         ]);
@@ -270,7 +270,7 @@ class QueuesController extends Controller
             $dataUsers[$user->id] = UtilHelper::ucTexto($user->name) . ' ( ' . $user->email . ' / ' . $user->rut . ' )';
         }
         return view('administrator.queues.add_users', [
-            'title'     => 'Colas',
+            'title'     => 'Equipos',
             'queue'      => $queue,
             'data'      => $data,
             'users'     => $dataUsers,

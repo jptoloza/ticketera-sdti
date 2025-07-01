@@ -41,36 +41,35 @@ class SendNotificationsEmail extends Command
             $notifications = Notification::where('execute', '=', false)->get();
             foreach ($notifications as $notification) {
                 $type = TypeNotification::find($notification->type_notification_id);
-                $register_id = $notification->register_id;
-                $ticket = null;
-                $message = null;
-                $content = null;
-                $sent = true;
-                $register = '';
+                $register_id 	= $notification->register_id;
+                $ticket 	= null;
+                $message 	= null;
+                $content 	= null;
+                $sent 		= true;
+                $register 	= '';
                 switch ($type->type) {
                     case 'NEW':
-                        $ticket = Ticket::find($register_id);
-                        $user   = User::find($ticket->user_id);
-                        $created_by = User::find($ticket->created_by);
-                        $status = Status::find($ticket->status_id);
-                        $queue = Queue::find($ticket->queue_id);
-                        $content = (object) [
-                            'ticket'    => $ticket,
-                            'user'      => $user,
-                            'created_by' => $created_by,
-                            'status'    => $status,
-                            'queue'     => $queue,
+                        $ticket 	= Ticket::find($register_id);
+                        $user   	= User::find($ticket->user_id);
+                        $created_by 	= User::find($ticket->created_by);
+                        $status 	= Status::find($ticket->status_id);
+                        $queue 		= Queue::find($ticket->queue_id);
+                        $content 	= (object) [
+                            'ticket'    	=> $ticket,
+                            'user'      	=> $user,
+                            'created_by' 	=> $created_by,
+                            'status'    	=> $status,
+                            'queue'     	=> $queue,
                         ];
                         try {
-                            //Mail::to($content->user->email)->send(new EmailNotification('NEW', $content));
-                            Mail::to("jponce@uc.cl")->send(new EmailNotification('NEW', $content));
+                            Mail::to($content->user->email)->send(new EmailNotification('NEW', $content));
                         } catch (Exception $e) {
                             $register = $e->getMessage();
                             $sent = false;
                         }
 
-                        $notification->execute = true;
-                        $notification->sent = $sent;
+                        $notification->execute 	= true;
+                        $notification->sent 	= $sent;
                         $notification->register = $register;
                         $notification->save();
                         break;
@@ -96,8 +95,7 @@ class SendNotificationsEmail extends Command
                             'message'   => $message
                         ];
                         try {
-                            //Mail::to($content->user->email)->send(new EmailNotification('MESSAGE', $content));
-                            Mail::to("jponce@uc.cl")->send(new EmailNotification('MESSAGE', $content));
+                            Mail::to($content->user->email)->send(new EmailNotification('MESSAGE', $content));
                         } catch (Exception $e) {
                             $register = $e->getMessage();
                             $sent = false;
@@ -121,12 +119,12 @@ class SendNotificationsEmail extends Command
                             'queue'     => $queue
                         ];
                         try {
-                            //Mail::to($content->user->email)->send(new EmailNotification('MESSAGE', $content));
-                            Mail::to("jponce@uc.cl")->send(new EmailNotification('CHANGE_STATUS', $content));
+                            Mail::to($content->user->email)->send(new EmailNotification('MESSAGE', $content));
+                            
                         } catch (Exception $e) {
                             $register = $e->getMessage();
                             $sent = false;
-                        }
+                  }
                         $notification->execute = true;
                         $notification->sent = $sent;
                         $notification->register = $register;
@@ -135,18 +133,18 @@ class SendNotificationsEmail extends Command
 
                     default:
                         $role_id    = UtilHelper::globalKey('ROLE_ADMINISTRATOR');
-                        $users_roles = UserRole::where('role_id', '=', $role_id);
+                        $users_roles = UserRole::where('role_id', '=', $role_id)->get();
                         $users      = [];
                         foreach ($users_roles as $user_role) {
-                            $users[] = $user_role->email;
+				$_user = User::find($user_role->user_id);
+                            $users[] = $_user->email;
                         }
                         foreach ($users as $user) {
                             try {
                                 $content = (object)  [
                                     'register' => $notification->register
                                 ];
-                                //Mail::to($content->user->email)->send(new EmailNotification('MESSAGE', $content));
-                                Mail::to("jponce@uc.cl")->send(new EmailNotification('ADMIN', $content));
+                                Mail::to($user->email)->send(new EmailNotification('MESSAGE', $content));
                             } catch (Exception $e) {
                                 $register = $e->getMessage();
                                 $sent = false;
@@ -159,7 +157,7 @@ class SendNotificationsEmail extends Command
                         break;
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             echo $e->getMessage();
         }
     }

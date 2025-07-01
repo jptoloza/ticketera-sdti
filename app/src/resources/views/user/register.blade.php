@@ -35,12 +35,12 @@
           <div class="uc-form-group">
             <label for="first_name">Nombre <span class="text-danger">*</span></label>
             <input id="name" name="name" type="text" class="uc-input-style" placeholder="Ingrese nombre"
-              required value="{{ $user->name }}" />
+              required value="@if ($user->name !== 'NN'){{ $user->name }}@endif" />
           </div>
           <div class="uc-form-group">
             <label for="run">R.U.T. <span class="text-danger">*</span></label>
             <input id="rut" name="rut" type="text" class="uc-input-style" placeholder="Ingrese RUT" required
-              value="{{ $user->rut }}" />
+              value="@if ($user->rut !== '1-9'){{ $user->rut }}@endif" />
           </div>
           <div class="uc-form-group">
             <label for="email">Email <span class="text-danger">*</span></label>

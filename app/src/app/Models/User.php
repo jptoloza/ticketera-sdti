@@ -21,7 +21,9 @@ class User extends Model
         'login',
         'email',
         'unit_id',
-        'profile'
+        'profile',
+        'code',
+        'active'
     ];
 
     public function roles()

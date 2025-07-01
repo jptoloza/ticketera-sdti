@@ -178,4 +178,16 @@ class UtilHelper
                 return $number; // Bytes
         }
     }
+
+    /**
+     * 
+     */
+    public static function generateCode()
+    {
+        $code = '';
+        for ($i = 0; $i < 8; $i++) {
+            $code .= mt_rand(0, 9);
+        }
+        return $code;
+    }
 }

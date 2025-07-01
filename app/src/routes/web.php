@@ -26,6 +26,17 @@ Route::get('/', [LoginController::class, 'index'])
 Route::get('/cas/login', [LoginController::class, 'loginCAS'])
     ->name('login_cas');
 
+Route::post('/signin', [LoginController::class, 'loginEmail'])
+    ->name('login_email');
+
+Route::post('/signin/validate', [LoginController::class, 'loginEmailValidate'])
+    ->name('login_email_validate');
+
+Route::get('/login/error', [LoginController::class, 'loginError'])
+    ->name('login_error');
+
+
+
 Route::get('/logout', [LoginController::class, 'logout'])
     ->name('logout');
 
@@ -243,5 +254,4 @@ Route::middleware([AuthTicket::class])->group(function () {
         Route::get('/admin/status/delete/{id}', [StatusController::class, 'destroy'])
             ->name('admin_status_delete');
     });
-
 });

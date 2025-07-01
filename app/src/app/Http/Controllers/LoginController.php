@@ -6,16 +6,19 @@ use phpCAS;
 use \Exception;
 use App\Models\Unit;
 use App\Models\User;
-use App\Models\UserRole;
 use App\Http\Helpers\Jquery;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Mail\EmailNotification;
 use App\Http\Helpers\UtilHelper;
 use App\Models\TypeNotification;
 use App\Http\Helpers\LoggerHelper;
 use App\Http\Traits\ResponseTrait;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
+
 
 define('UC_CAS_VERSION', '2.0');
 define('UC_CAS_HOSTNAME2', env('CAS_HOSTNAME'));
@@ -62,8 +65,6 @@ class LoginController extends Controller
     /**
      * 
      * Summary of loginCAS
-     * @param \Illuminate\Http\Request $request
-     * @return mixed|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function loginCAS(Request $request)
     {
@@ -89,6 +90,7 @@ class LoginController extends Controller
                         'email' => $email,
                         'rut'   => $rut,
                         'name'  => $name,
+                        'active' => true
                     ]);
                     LoggerHelper::add($request, 'CREATE USER: ' . $userCas);
                     $type = TypeNotification::where('type', 'ADMIN')->first();
@@ -114,7 +116,6 @@ class LoginController extends Controller
                 return redirect()->route('dashboard');
             }
         } catch (Exception $e) {
-            dd($e->getMessage());
             abort(401);
         }
     }
@@ -150,5 +151,164 @@ class LoginController extends Controller
             'units'         => Unit::where('active', true)->get(),
             'ajaxUpdate'    => Jquery::ajaxPost('actionForm', '/admin/users')
         ]);
+    }
+
+
+
+
+    /**
+     * Summary of loginEmail
+     * @param \Illuminate\Http\Request $request
+     * @return bool|LoginController|mixed|string|\Illuminate\Http\JsonResponse
+     */
+    public function loginEmail(Request $request)
+    {
+        try {
+            $rules = [
+                'email' => ['required'],
+            ];
+            $messages = [
+                'email' => 'Email no es válido.',
+            ];
+            $mainDomain = 'uc.cl';
+            $nickname = strstr($request->input('email'), '@', true);
+            $domain = substr(strrchr($request->input('email'), "@"), 1);
+            if ($domain !== $mainDomain || !str_ends_with($domain, $mainDomain)) {
+                return response()->json(
+                    [
+                        'success' => 'error',
+                        'message' => '1No tiene permisos para ingresar a esta aplicación.',
+                    ],
+                    401,
+                );
+            }
+            $user = User::where('email', '=', $request->input('email'))->first();
+            if (is_null($user)) {
+                $user = User::create([
+                    'login' => $nickname,
+                    'email' => $request->input('email'),
+                    'rut'   => '1-9',
+                    'name'  => 'NN',
+                    'active' => true,
+                    'code'  => UtilHelper::generateCode()
+                ]);
+                LoggerHelper::add($request, 'CREATE USER: ' . $request->input('email'));
+                $type = TypeNotification::where('type', 'ADMIN')->first();
+                Notification::create([
+                    'type_notification_id'  => $type->id,
+                    'register_id'           => $user->id,
+                    'sent'                  => false,
+                    'execute'               => false,
+                    'contents'              => 'Nuevo Usuario: ' . $user->name
+                ]);
+            } 
+            LoggerHelper::add($request, 'Login EMAIL OK: ' . $request->input('email'));
+            Mail::to($request->input('email'))
+                ->send(new EmailNotification('CODE', $user));
+
+            return response()->json(
+                [
+                    'success' => 'ok',
+                ],
+                200
+            );
+        } catch (ValidationException $e) {
+            return $this->responseErrorValidattion($request, $e->errors());
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            $message = LoggerHelper::add($request, $message);
+            return response()->json(
+                [
+                    'success' => 'error',
+                    'message' => $message,
+                ],
+                400,
+            );
+        }
+    }
+
+
+
+    /**
+     * 
+     *
+     */
+    public function loginEmailValidate(Request $request)
+    {
+        try {
+            $rules = [
+                'user' => ['required'],
+                'code' => ['required'],
+            ];
+            $messages = [
+                'user' => 'Usuario no es válido.',
+                'code' => 'Código no es válido.',
+            ];
+            $user = User::where('email', '=', $request->input('user'))
+                ->where('active', '=', true)
+                ->whereNull('deleted_at')
+                ->first();
+            if (is_null($user)) {
+                return response()->json(
+                    [
+                        'success'   => 'error',
+                        'url'       => route('login_error')
+                    ],
+                    401,
+                );
+            }
+            if ($user->code !== $request->input('code')) {
+                return response()->json(
+                    [
+                        'success'   => 'error',
+                        'message'   => 'Código no es válido.'
+                    ],
+                    400,
+                );
+            }
+            $user->code = null;
+            $user->save();
+            LoggerHelper::add($request, 'LOGIN EMAIL USER: ' . $user->email);
+            $data = $user->toArray();
+            $data['navbar_name'] = UtilHelper::navbarName($data['name']);
+            Session($data);
+            if (!$user->unit_id || !$user->profile) {
+                return response()->json(
+                    [
+                        'success'   => 'ok',
+                        'url'       => route('user_register_form')
+                    ],
+                    200,
+                );
+            }
+            return response()->json(
+                [
+                    'success'   => 'ok',
+                    'url'       => '/'
+                ],
+                200,
+            );
+        } catch (ValidationException $e) {
+            return $this->responseErrorValidattion($request, $e->errors());
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            $message = LoggerHelper::add($request, $message);
+            return response()->json(
+                [
+                    'success' => 'error',
+                    'message' => $message,
+                ],
+                400,
+            );
+        }
+    }
+
+
+    /**
+     * 
+     */
+    public function loginError(Request $request)
+    {
+        return view('errors.401');
     }
 }

@@ -11,24 +11,24 @@
                 <a href="/admin">Herramientas Administrativas</a>
                 <i class="uc-icon">keyboard_arrow_right</i>
             </li>
-            <li class="uc-breadcrumb_item current bc-siga">Colas</li>
+            <li class="uc-breadcrumb_item current bc-siga">Equipos</li>
         </ol>
 
         <div class="d-flex align-items-center">
-            <h1>Colas</h1>
+            <h1>Equipos</h1>
             <span class="uc-heading-decoration"></span>
         </div>
 
 
         <div class="mt-2 bg-white p-2 border border-gray rounded-1">
             <div class="p-2 p-size--lg">
-                En esta sección podrá gestionar y asignar las Colas del sistema.
+                En esta sección podrá gestionar y asignar los Equipos de trabajo del sistema.
             </div>
 
             <div class="p-2 mt-4 mb-0">
                 <a href="{{ route('admin_queues_add') }}" class="uc-btn btn-primary btn-inline">
                     <i class="uc-icon">add_circle</i>
-                    Nueva Cola
+                    Nuevo Equipo
                 </a>
             </div>
 
